@@ -1,0 +1,101 @@
+-- Accuracy Effects
+local hook = function(self, data)
+  -- This all calculates atk and def (again) because we don't have access to it.
+  if not data.target then return end
+
+  -- Get attack and defense.
+  local atk, def = self:combatAttack(data.weapon), data.target:combatDefense()
+
+  -- add stalker damage and attack bonus
+  local effStalker = self:hasEffect(self.EFF_STALKER)
+  if effStalker and effStalker.target == data.target then
+    local t = self:getTalentFromId(self.T_STALK)
+    atk = atk + t.getAttackChange(self, t, effStalker.bonus)
+  end
+
+  -- add marked prey damage and attack bonus
+  local effPredator = self:hasEffect(self.EFF_PREDATOR)
+  if effPredator and effPredator.type == data.target.type then
+    if effPredator.subtype == data.target.subtype then
+      atk = atk + effPredator.subtypeAttackChange
+    else
+      atk = atk + effPredator.typeAttackChange
+    end
+  end
+
+  if data.hitted then
+    local strength
+
+    strength = self:getAccuracyEffectStrength(data.weapon, 'whip')
+    if strength and data.target.drain_energy then
+      data.target:drain_energy(self:getAccuracyEffect(data.weapon, atk, def, 0.5 * strength), 100)
+    end
+
+    strength = self:getAccuracyEffectStrength(data.weapon, 'rapid')
+    if strength and self.boost_energy then
+      self:boost_energy(self:getAccuracyEffect(data.weapon, atk, def, 0.5 * strength), 100)
+    end
+
+    strength = self:getAccuracyEffectStrength(data.weapon, 'swordbreaker')
+    if strength then
+      if rng.percent(self:getAccuracyEffect(data.weapon, atk, def, strength)) and
+        data.target:canBe('disarm')
+      then
+        game.logSeen(self, '%s tries to disarm %s!', self.name:capitalize(), data.target.name)
+        local duration = 2 + (data.weapon.swordbreaker_disarm_duration or 0)
+        data.target:setEffect('EFF_DISARMED', duration, {apply_power=self:combatAttack(data.weapon)})
+      end
+    end
+
+    strength = self:getAccuracyEffectStrength(data.weapon, 'blind')
+    if strength then
+      if rng.percent(self:getAccuracyEffect(data.weapon, atk, def, strength)) and
+        data.target:canBe('blind')
+      then
+        game.logSeen(self, '%s tries to blind %s!', self.name:capitalize(), data.target.name)
+        data.target:setEffect('EFF_BLINDED', 2, {apply_power=self:combatAttack(data.weapon)})
+      end
+    end
+
+    strength = self:getAccuracyEffectStrength(data.weapon, 'pull')
+    if strength then
+      if rng.percent(self:getAccuracyEffect(data.weapon, atk, def, strength)) and
+        data.target:canBe('knockback')
+      then
+        game.logSeen(self, '%s pulls %s in!', self.name:capitalize(), data.target.name)
+        data.target:pull(self.x, self.y, 1)
+      end
+    end
+
+    strength = self:getAccuracyEffectStrength(data.weapon, 'duel')
+    if strength then
+      if rng.percent(self:getAccuracyEffect(data.weapon, atk, def, strength.power)) then
+        self:setEffect('EFF_GRAYSWANDIR_DUEL', strength.dur, {
+                         def = strength.def, max = strength.max})
+      end
+    end
+
+    strength = self:getAccuracyEffectStrength(data.weapon, 'duel_disrupt')
+    if strength then
+      if rng.percent(self:getAccuracyEffect(data.weapon, atk, def, strength.power)) then
+        data.target:setEffect('EFF_GRAYSWANDIR_DUEL_DISRUPTION', strength.dur, {
+                                atk = strength.atk, max = strength.max})
+      end
+    end
+
+    strength = self:getAccuracyEffectStrength(data.weapon, 'silence')
+    if strength then
+      local power, duration = strength, 2
+      if _G.type(strength) == 'table' then
+        power = strength.power
+        duration = strength.dur
+      end
+      if rng.percent(self:getAccuracyEffect(data.weapon, atk, def, power)) then
+        data.target:setEffect('EFF_GRAYSWANDIR_PHYSICAL_SILENCED', duration, {
+                                apply_power = self:combatAttack(data.weapon),})
+      end
+    end
+  end
+
+end
+class:bindHook('Combat:attackTargetWith', hook)
