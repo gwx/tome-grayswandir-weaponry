@@ -43,11 +43,18 @@ local hook = function(self, data)
       'This changes several aspects of reloading. Moving or waiting will now automatically reload. If you cannot reload your main quiver, your offset quiver will be reloaded instead. The reload talent is now instant use, costs 10 stamina, and refills your ammo directly instead of giving the reload buff.')
 
     -- Add options for each weapon type.
-    local weapontypes = {'swordbreakers', 'rapiers', 'spears', 'whips', 'tridents', 'clubs'}
+    local weapontypes = {'swordbreakers', 'rapiers', 'spears', 'whips', 'tridents', 'clubs', {'throwing_knives', 'Throwing Knives'},}
     for _, weapontype in pairs(weapontypes) do
+      local display_name
+      if _G.type(weapontype) == 'table' then
+        display_name = weapontype[2]
+        weapontype = weapontype[1]
+      else
+        display_name = weapontype:capitalize()
+      end
       local description = ('Allows %s to be generated. You must reload the game for this to take effect, and it will not change any already generated zones.')
-        :format(weapontype)
-      add_boolean_option(weapontype, weapontype:capitalize(), description)
+        :format(display_name)
+      add_boolean_option(weapontype, display_name:lower(), description)
     end
   end
 end

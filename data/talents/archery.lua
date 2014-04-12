@@ -1,5 +1,18 @@
 local t
 
+
+-- SHOOT
+Talents.talents_def.T_SHOOT.on_pre_use = function(self, t, silent)
+  if #self:getArcheryWeapons() == 0 then
+    if not silent then
+      game.logPlayer(self, 'You have nothing that you can shoot.')
+    end
+    return false
+  end
+  return true
+end
+
+
 -- RELOAD
 t = Talents.talents_def.T_RELOAD
 t.stamina = function(self, t)
