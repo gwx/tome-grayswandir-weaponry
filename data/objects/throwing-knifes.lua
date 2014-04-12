@@ -10,7 +10,8 @@ if config.settings.tome.grayswandir_weaponry_throwing_knives ~= false then
     rarity = 8,
     metallic = true,
     is_own_ammo = true,
-    archery = 'knife', archery_kind = 'knife', archery_ammo = 'knife',
+    archery_kind = 'knife', archery_ammo = 'knife',
+    archery = false, -- Can also melee hit.
     combat = {
       talented = 'knife',
       damrange = 1.3,
@@ -34,6 +35,7 @@ if config.settings.tome.grayswandir_weaponry_throwing_knives ~= false then
     cost = 7,
     material_level = 1,
     combat = {
+      range = 3,
       capacity = resolvers.rngavg(3, 6),
       dam = resolvers.rngavg(3, 5),
       apr = 5,

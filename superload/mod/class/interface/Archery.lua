@@ -37,38 +37,41 @@ function _M:reloadAmmo(ammo)
   return true
 end
 
--- The order to reload slots in
-
+-- The order to reload slots in. Picks the lowest ammo left in each grouping.
 _M.reload_order = {
-  'QUIVER', 'MAINHAND', 'OFFHAND', 'PSIONIC_FOCUS',
-  'QS_QUIVER', 'QS_MAINHAND', 'QS_OFFHAND', 'QS_PSIONIC_FOCUS',}
+  {'QUIVER', 'MAINHAND', 'OFFHAND', 'PSIONIC_FOCUS'},
+  {'QS_QUIVER', 'QS_MAINHAND', 'QS_OFFHAND', 'QS_PSIONIC_FOCUS',},}
 
--- Return the first ammo that needs reloading.
+-- Return the ammo that needs reloading.
 function _M:needReload()
-  for _, inven in ipairs(_M.reload_order) do
-    inven = self:getInven(inven)
-    local ammo = inven and inven[1]
-    if ammo and not ammo.infinite then
-      local combat = ammo.combat
-      if combat and combat.capacity and combat.shots_left and
-        combat.shots_left < combat.capacity then
-          return ammo
+  for _, group in ipairs(_M.reload_order) do
+    local lowest_ammo, lowest_count
+    for _, inven in ipairs(group) do
+      inven = self:getInven(inven)
+      local ammo = inven and inven[1]
+
+      if ammo and not ammo.infinite then
+        local combat = ammo.combat
+        if combat and combat.capacity and combat.shots_left and
+          combat.shots_left < combat.capacity and
+          (not lowest_ammo or combat.shots_left < lowest_count)
+        then
+          lowest_ammo = ammo
+          lowest_count = combat.shots_left
+        end
       end
     end
+    if lowest_ammo then return lowest_ammo end
   end
   return false
 end
 
 -- Reload the first empty ammo on the reload list.
 function _M:reload()
-  for _, inven in ipairs(_M.reload_order) do
-    inven = self:getInven(inven)
-    if inven and inven[1] and self:reloadAmmo(inven[1]) then return true end
-  end
+  local ammo = self:needReload()
+  if ammo then return self:reloadAmmo(ammo) end
   return false
 end
-
-
 
 -- Changing around the actual shooting.
 _M.shoot_order = {'MAINHAND', 'OFFHAND', 'PSIONIC_FOCUS', 'QUIVER',}
@@ -84,7 +87,7 @@ function _M:getArcheryWeapons()
   for _, inven in ipairs(_M.shoot_order) do
     inven = self:getInven(inven) or {}
     for _, weapon in ipairs(inven) do
-      if not weapon or not weapon.archery then goto invalid_weapon end
+      if not weapon or not weapon.archery_kind then goto invalid_weapon end
 
       local ammo = ammo
       if weapon.is_own_ammo then ammo = weapon end
