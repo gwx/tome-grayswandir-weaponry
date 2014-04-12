@@ -187,7 +187,7 @@ function _M:archeryAcquireTargets(tg, params)
   for _, data in pairs(weapons) do
     local p = table.clone(params)
     p.offhand = data.offhand
-    p.use_psi_achery = data.use_psi_archery
+    p.use_psi_archery = data.use_psi_archery
     local new_targets = self:archeryAcquireTargetsWith(
       data.weapon, data.ammo, x, y, table.clone(tg), p)
     if new_targets and #new_targets > 0 then
@@ -276,7 +276,7 @@ end
 function _M:archeryShoot(targets, talent, tg, params)
   local base_tg = tg or {}
   base_tg.talent = base_tg.talent or talent
-  params = params or {}
+  params = params and table.clone(params) or {}
   self:triggerHook {
     'Combat:archeryTargetKind', tg = tg, params = params, targets = targets, mode = 'fire'}
 
@@ -294,12 +294,12 @@ function _M:archeryShoot(targets, talent, tg, params)
     if data.offhand and not wcombat.no_offhand_penalty then
       tg.archery.mult = self:getOffHandMult(wcombat, tg.archery.mult)
     end
+    if data.use_psi_archery then tg.archery.use_psi_archery = true end
     if weapon.on_archery_trigger then
       weapon.on_archery_trigger(weapon, self, tg, params, data, talent)
     end
     self:projectile(tg, data.x, data.y, _M.archery_projectile)
   end
 end
-
 
 return _M

@@ -36,10 +36,74 @@ if config.settings.tome.grayswandir_weaponry_throwing_knives ~= false then
     material_level = 1,
     combat = {
       range = 3,
-      capacity = resolvers.rngavg(3, 6),
+      capacity = resolvers.rngavg(2, 7),
       dam = resolvers.rngavg(3, 5),
       apr = 5,
       physcrit = 4,
+      dammod = {str = 0.45, dex = 0.45},
+      alt_dammod = {{str = 0.45, cun = 0.45}, dex = 0.45,},},}
+
+  newEntity{
+    base = "BASE_THROWKNIFE",
+    name = "steel throwing knives", short_name = "steel",
+    level_range = {10, 20},
+    require = {stat = {dex = 16},},
+    cost = 12,
+    material_level = 2,
+    combat = {
+      range = 3,
+      capacity = resolvers.rngavg(3, 7),
+      dam = resolvers.rngavg(6, 10),
+      apr = 6,
+      physcrit = 5,
+      dammod = {str = 0.45, dex = 0.45},
+      alt_dammod = {{str = 0.45, cun = 0.45}, dex = 0.45,},},}
+
+  newEntity{
+    base = "BASE_THROWKNIFE",
+    name = "dwarven-steel throwing knives", short_name = "d.steel",
+    level_range = {20, 30},
+    require = {stat = {dex = 24,},},
+    cost = 18,
+    material_level = 3,
+    combat = {
+      range = 4,
+      capacity = resolvers.rngavg(4, 7),
+      dam = resolvers.rngavg(11, 19),
+      apr = 7,
+      physcrit = 6,
+      dammod = {str = 0.45, dex = 0.45},
+      alt_dammod = {{str = 0.45, cun = 0.45}, dex = 0.45,},},}
+
+  newEntity{
+    base = "BASE_THROWKNIFE",
+    name = "stralite throwing knives", short_name = "stralite",
+    level_range = {30, 40},
+    require = {stat = {dex = 35},},
+    cost = 29,
+    material_level = 4,
+    combat = {
+      range = 4,
+      capacity = resolvers.rngavg(5, 7),
+      dam = resolvers.rngavg(3, 5),
+      apr = 9,
+      physcrit = 8,
+      dammod = {str = 0.45, dex = 0.45},
+      alt_dammod = {{str = 0.45, cun = 0.45}, dex = 0.45,},},}
+
+  newEntity{
+    base = "BASE_THROWKNIFE",
+    name = "voratun throwing knives", short_name = "voratun",
+    level_range = {40, 50},
+    require = {stat = {dex = 48},},
+    cost = 40,
+    material_level = 5,
+    combat = {
+      range = 5,
+      capacity = resolvers.rngavg(6, 7),
+      dam = resolvers.rngavg(31, 35),
+      apr = 9,
+      physcrit = 10,
       dammod = {str = 0.45, dex = 0.45},
       alt_dammod = {{str = 0.45, cun = 0.45}, dex = 0.45,},},}
 
