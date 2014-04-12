@@ -75,6 +75,7 @@ end
 
 -- Changing around the actual shooting.
 _M.shoot_order = {'MAINHAND', 'OFFHAND', 'PSIONIC_FOCUS', 'QUIVER',}
+_M.shoot_offhand_slots = {OFFHAND = true}
 
 function _M:getArcheryWeapons()
   if self:attr('disarmed') then return {}, 'disarmed' end
@@ -85,8 +86,10 @@ function _M:getArcheryWeapons()
 
   local weapons = {}
   for _, inven in ipairs(_M.shoot_order) do
-    inven = self:getInven(inven) or {}
-    for _, weapon in ipairs(inven) do
+    local list = self:getInven(inven) or {}
+    local offhand = _M.shoot_offhand_slots[inven]
+
+    for _, weapon in ipairs(list) do
       if not weapon or not weapon.archery_kind then goto invalid_weapon end
 
       local ammo = ammo
@@ -103,7 +106,7 @@ function _M:getArcheryWeapons()
         if resource < wcombat.use_resource.value then goto invalid_weapon end
       end
 
-      table.insert(weapons, {weapon = weapon, ammo = ammo})
+      table.insert(weapons, {weapon = weapon, ammo = ammo, offhand = offhand})
 
       ::invalid_weapon::
     end
@@ -180,7 +183,7 @@ function _M:archeryAcquireTargets(tg, params)
   local speed = 0, sound
   for _, data in pairs(weapons) do
     local new_targets = self:archeryAcquireTargetsWith(
-      data.weapon, data.ammo, x, y, table.clone(tg), params)
+      data.weapon, data.ammo, x, y, table.clone(tg), params, data.offhand)
     if new_targets and #new_targets > 0 then
       table.append(targets, new_targets)
       speed = math.max(self:combatSpeed(weapon), speed)
@@ -199,7 +202,7 @@ end
 
 
 -- Get archery targets list for a specific weapon.
-function _M:archeryAcquireTargetsWith(weapon, ammo, x, y, tg, params)
+function _M:archeryAcquireTargetsWith(weapon, ammo, x, y, tg, params, offhand)
   local targets = {}
   local wcombat = weapon.combat
   local acombat = ammo.combat
@@ -250,7 +253,7 @@ function _M:archeryAcquireTargetsWith(weapon, ammo, x, y, tg, params)
       'Combat:archeryAcquire', tg = tg, params, infinite = infinite,
       weapon = weapon, ammo = ammo, x = x, y = y,}
 
-    local t = {x = x, y = y, target = target, weapon = weapon, ammo = ammo,}
+    local t = {x = x, y = y, target = target, weapon = weapon, ammo = ammo, offhand = offhand}
     table.insert(targets, t)
   end
 
@@ -277,9 +280,13 @@ function _M:archeryShoot(targets, talent, tg, params)
     tg.type = tg.type or wcombat.tg_type or acombat.tg_type
     tg.display = tg.display or self:archeryDefaultProjectileVisual(weapon, ammo)
     tg.speed = (tg.speed or 10) + (wcombat.travel_speed or 0) + (acombat.travel_speed or 0)
-    tg.archery = params or {}
+    tg.archery = params and table.clone(params) or {}
     tg.archery.weapon = wcombat
     tg.archery.ammo = acombat
+    tg.archery.mult = (tg.archery.mult or 1) * (data.mult or 1)
+    if data.offhand and not wcombat.no_offhand_penalty then
+      tg.archery.mult = self:getOffHandMult(wcombat, tg.archery.mult)
+    end
     if weapon.on_archery_trigger then
       weapon.on_archery_trigger(weapon, self, tg, params, data, talent)
     end
