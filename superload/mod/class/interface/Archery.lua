@@ -109,6 +109,20 @@ function _M:getArcheryWeapons()
   return weapons
 end
 
+-- Get the list of all equipped ammos.
+function _M:getArcheryAmmos()
+  local ammos = {}
+  for _, inven in ipairs(_M.shoot_order) do
+    inven = self:getInven(inven) or {}
+    for _, ammo in ipairs(inven) do
+      if not ammo or not ammo.archery_ammo then goto invalid_ammo end
+      table.insert(ammos, ammo)
+      ::invalid_ammo::
+    end
+  end
+  return ammos
+end
+
 function _M:archeryAcquireTargets(tg, params)
   params = params or {}
   local weapons = self:getArcheryWeapons()
