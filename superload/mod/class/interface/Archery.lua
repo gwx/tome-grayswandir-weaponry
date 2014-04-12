@@ -76,6 +76,7 @@ end
 -- Changing around the actual shooting.
 _M.shoot_order = {'MAINHAND', 'OFFHAND', 'PSIONIC_FOCUS', 'QUIVER',}
 _M.shoot_offhand_slots = {OFFHAND = true}
+_M.shoot_psi_slots = {PSIONIC_FOCUS = true}
 
 function _M:getArcheryWeapons()
   if self:attr('disarmed') then return {}, 'disarmed' end
@@ -88,6 +89,7 @@ function _M:getArcheryWeapons()
   for _, inven in ipairs(_M.shoot_order) do
     local list = self:getInven(inven) or {}
     local offhand = _M.shoot_offhand_slots[inven]
+    local psi = _M.shoot_psi_slots[inven]
 
     for _, weapon in ipairs(list) do
       if not weapon or not weapon.archery_kind then goto invalid_weapon end
@@ -106,7 +108,8 @@ function _M:getArcheryWeapons()
         if resource < wcombat.use_resource.value then goto invalid_weapon end
       end
 
-      table.insert(weapons, {weapon = weapon, ammo = ammo, offhand = offhand})
+      table.insert(weapons, {weapon = weapon, ammo = ammo,
+                             offhand = offhand, use_psi_archery = psi})
 
       ::invalid_weapon::
     end
@@ -182,8 +185,11 @@ function _M:archeryAcquireTargets(tg, params)
   local targets = {}
   local speed = 0, sound
   for _, data in pairs(weapons) do
+    local p = table.clone(params)
+    p.offhand = data.offhand
+    p.use_psi_achery = data.use_psi_archery
     local new_targets = self:archeryAcquireTargetsWith(
-      data.weapon, data.ammo, x, y, table.clone(tg), params, data.offhand)
+      data.weapon, data.ammo, x, y, table.clone(tg), p)
     if new_targets and #new_targets > 0 then
       table.append(targets, new_targets)
       speed = math.max(self:combatSpeed(weapon), speed)
@@ -202,7 +208,7 @@ end
 
 
 -- Get archery targets list for a specific weapon.
-function _M:archeryAcquireTargetsWith(weapon, ammo, x, y, tg, params, offhand)
+function _M:archeryAcquireTargetsWith(weapon, ammo, x, y, tg, params)
   local targets = {}
   local wcombat = weapon.combat
   local acombat = ammo.combat
@@ -253,7 +259,8 @@ function _M:archeryAcquireTargetsWith(weapon, ammo, x, y, tg, params, offhand)
       'Combat:archeryAcquire', tg = tg, params, infinite = infinite,
       weapon = weapon, ammo = ammo, x = x, y = y,}
 
-    local t = {x = x, y = y, target = target, weapon = weapon, ammo = ammo, offhand = offhand}
+    local t = {x = x, y = y, target = target, weapon = weapon, ammo = ammo,
+               offhand = params.offhand, use_psi_archery = params.use_psi_archery}
     table.insert(targets, t)
   end
 
