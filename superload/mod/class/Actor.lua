@@ -105,5 +105,22 @@ function _M:modifyPool(pool_id, reason, amount)
   end
 end
 
+-- Returns true if you have all the resources.
+function _M:hasResources(resources)
+  for resource, amount in pairs(resources) do
+    local get = self['get'..resource:capitalize()]
+    if get(self) < amount then return end
+  end
+  return true
+end
+
+-- Uses all the resources
+function _M:useResources(resources)
+  for resource, amount in pairs(resources) do
+    self['inc'..resource:capitalize()](self, -amount)
+  end
+  return true
+end
+
 
 return _M

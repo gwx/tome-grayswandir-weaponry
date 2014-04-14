@@ -54,7 +54,7 @@ hook = function(self, data)
       for resource, amount in pairs(strike.cost) do
         cost_string = ('%s %d %s'):format(cost_string, amount, resource)
       end
-      data.desc:add('#ORANGE#Additonal Strike costing'..cost_string..':#LAST#\n')
+      data.desc:add('#ORANGE#Additonal Strike on hit (costing'..cost_string..'):#LAST#\n')
 
       local tmp = {combat = strike}
       desc_combat(tmp, data.compare_with, 'combat')

@@ -16,9 +16,10 @@ description = [[This adds new weapon types and egos to the game.
 - Throwing knives can be used in melee or as a short ranged attack with the shoot talent.
 - Daggers will now use the higher of strength or cunning if you don't have Lethality.
 - Mindslayers can now equip ranged weapons in their psionic focus slot.
+- Aurastones are magic-based items that can be equipped to modify your unarmed attacks.
 
 This also includes all the changes made in the Archery Tweaks mod as an option, and should not be used with the Archery Tweaks mod.]]
-tags = {'weapon', 'whip', 'trident', 'melee', 'rapier', 'swordbreaker', 'spear', 'club', 'throw', 'psi'}
+tags = {'weapon', 'whip', 'trident', 'melee', 'rapier', 'swordbreaker', 'spear', 'club', 'throw', 'psi', 'aurastone', 'aura', 'stone', 'magic',}
 
 overload = true
 superload = true

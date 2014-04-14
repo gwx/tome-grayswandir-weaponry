@@ -216,7 +216,23 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
 
   -- Try to do a normal attack.
   if self:combatCanMelee(weapon, target) then
-    return attackTargetWith(self, target, weapon, damtype, mult, force_dam)
+    local speed, hit, hits = attackTargetWith(self, target, weapon, damtype, mult, force_dam)
+
+    -- Do resource strikes.
+    if hit and weapon.resource_strikes then
+      local auto_melee = self.turn_procs.auto_melee_hit
+      self.turn_procs.auto_melee_hit = true
+      for id, strike in pairs(weapon.resourceActo_strikes) do
+        local cost = strike.cost or {}
+        if self:hasResources(cost) then
+          self:attackTargetWith(target, strike, nil, 1)
+          self:useResources(cost)
+        end
+      end
+      self.turn_procs.auto_melee_hit = auto_melee
+    end
+
+    return speed, hit, hits
   end
 
   return 0, false, {}

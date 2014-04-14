@@ -11,11 +11,29 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
     display = '*', color=colors.WHITE, --image = resolvers.image_material('knife', 'metal'),
     --moddable_tile = resolvers.moddable_tile('dagger'),
     encumber = 1,
-    rarity = 9,
+    rarity = 14, -- high rarity until we get some decent egos for them.
     exotic = true,
     allow_unarmed = true,
-    on_wear = function(self, who) who:modifyPool('T_MANA_POOL', 'aurastone', 1) end,
-    on_takeoff = function(self, who) who:modifyPool('T_MANA_POOL', 'aurastone', -1) end,
+    on_wear = function(self, who)
+      -- Enable mana.
+      who:modifyPool('T_MANA_POOL', 'aurastone', 1)
+
+      -- Move resource strikes to be indexed by self. This is to get
+      -- around them stacking.
+      local strikes = self.wielder.combat.resource_strikes
+      if not strikes[self] then
+        local index, strike = next(strikes)
+        strikes[index] = nil
+        strikes[self] = strike
+      end
+    end,
+    on_takeoff = function(self, who)
+      -- Disable mana.
+      who:modifyPool('T_MANA_POOL', 'aurastone', -1)
+
+      -- Remove the resource strike field on who.
+      who.combat.resource_strikes[self] = nil
+    end,
     desc = [[A small stone that exudes a faint magical aura.]],
     --randart_able = '/data/general/objects/random-artifacts/melee.lua',
     egos = '/data-grayswandir-weaponry/egos/aurastones.lua',
