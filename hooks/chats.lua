@@ -67,6 +67,10 @@ if config.settings.tome.grayswandir_weaponry_clubs ~= false then
   table.insert(chat.last_hope_merchant.weapons, 'dragonbone greatclub')
 end
 
+if config.settings.tome.grayswandir_weaponry_throwing_knives ~= false then
+  table.insert(chat.last_hope_merchant.weapons, 'voratun throwing knives')
+end
+
 local maker_list = function(chat)
 	local mainbases = {
     armours = chat.last_hope_merchant.armours,

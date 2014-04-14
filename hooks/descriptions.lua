@@ -1,5 +1,7 @@
 local hook
 local stats = require 'engine.interface.ActorStats'
+local combat = require 'mod.class.interface.Combat'
+local g = require 'grayswandir'
 
 -- Combat Tooltip
 hook = function(self, data)
@@ -12,7 +14,6 @@ hook = function(self, data)
                     :format(d.dam, d.chance))
   end
 
-
   -- Replace Dammod line with our own.
   local index
   for i, value in ipairs(data.desc) do
@@ -21,6 +22,16 @@ hook = function(self, data)
       -- Hook doesn't pass in the use_actor, so we're assuming it's the player.
       local use_actor = game.player
 
+      -- Special check for psionic focus.
+      local old_psi = use_actor.use_psi_combat
+      for _, slot in pairs(combat.psi_combat_slots) do
+        slot = use_actor:getInven(slot)
+        if slot and g.hasv(slot, self) then
+          use_actor.use_psi_combat = true
+          break
+        end
+      end
+
       -- Replace the line.
       local dm = {}
       for stat, i in pairs(use_actor:getDammod(data.combat)) do
@@ -28,9 +39,28 @@ hook = function(self, data)
       end
       data.desc[i] = ('Uses stat%s: %s'):format(#dm > 1 and 's' or '',table.concat(dm, ', '))
 
+      -- Turn back psi combat.
+      use_actor.use_psi_combat = old_psi
+
       break
     end
   end
+
+  -- Resource Strikes
+  if data.combat.resource_strikes then
+    local desc_combat = debug.getinfo(3, 'f').func
+    for _, strike in pairs(data.combat.resource_strikes) do
+      local cost_string = ''
+      for resource, amount in pairs(strike.cost) do
+        cost_string = ('%s %d %s'):format(cost_string, amount, resource)
+      end
+      data.desc:add('#ORANGE#Additonal Strike costing'..cost_string..':#LAST#\n')
+
+      local tmp = {combat = strike}
+      desc_combat(tmp, data.compare_with, 'combat')
+    end
+  end
+
 end
 class:bindHook('Object:descCombat', hook)
 

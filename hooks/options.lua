@@ -43,7 +43,7 @@ local hook = function(self, data)
       'This changes several aspects of reloading. Moving or waiting will now automatically reload. If you cannot reload your main quiver, your offset quiver will be reloaded instead. The reload talent is now instant use, costs 10 stamina, and refills your ammo directly instead of giving the reload buff.')
 
     -- Add options for each weapon type.
-    local weapontypes = {'swordbreakers', 'rapiers', 'spears', 'whips', 'tridents', 'clubs', {'throwing_knives', 'Throwing Knives'},}
+    local weapontypes = {'swordbreakers', 'rapiers', 'spears', 'whips', 'tridents', 'clubs', {'throwing_knives', 'Throwing Knives'}, 'aurastones',}
     for _, weapontype in pairs(weapontypes) do
       local display_name
       if _G.type(weapontype) == 'table' then

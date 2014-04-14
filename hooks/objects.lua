@@ -14,6 +14,7 @@ local hook = function(self, data)
   if data.file == '/data/general/objects/objects.lua' then
     load_objects('spears')
     load_objects('2hspears')
+    load_objects('aurastones')
     -- Hack all the daggers.
     load_objects('alt-dammods')
   end

@@ -67,6 +67,26 @@ function _M:get_thrust_range(combat_keys)
   return range
 end
 
+-- If we can do a normal melee hit with the given weapon's combat table.
+function _M:combatCanMelee(combat, target)
+  -- Check range if we have a target.
+  if target and
+    g.get(self, '__talent_running', '__disallow_ranged_melee') and
+    core.fov.distance(self.x, self.y, target.x, target.y) > 1
+  then return false end
+
+  return true
+end
+
+-- If we can thrust with the given weapon's combat table.
+function _M:combatCanThrust(combat, target)
+  if target == self then return false end
+  local range = g.get(combat, 'thrust_range')
+  if not range or range <= 0 then return false end
+  return not g.get(self, '__talent_running', '__thrust_disabled') and
+    not combat.__thrust_disabled
+end
+
 -- Extend a single target to a beam attack.
 function _M:extendTargetByBeam(x, y, range)
   if not x or not y then return end
@@ -153,33 +173,13 @@ end
 local attackTargetWith = _M.attackTargetWith
 function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
   -- Expand this into a full set of thrust attacks.
-  if weapon and not weapon.__thrust_disabled and
-    _G.type(weapon.thrust_range) == 'number' and
-    weapon.thrust_range > 0 and
-    target ~= self and
-    not g.get(self, '__talent_running', '__thrust_disabled')
-    --(self.__talent_running and self.__talent_running.__thrust_disabled)
-  then
+  if self:combatCanThrust(weapon, target) then
     local range = weapon.thrust_range + 1
-
-    --[[
-    -- Check if target is beyond melee range and we're using a ranged talent.
-    if target and core.fov.distance(self.x, self.y, target.x, target.y) > range and
-      self.__talent_running and self:getTalentRange(self.__talent_running) > range
-    then
-      -- If it is, then just do a normal hit.
-      return attackTargetWith(self, target, weapon, damtype, mult, force_dam)
-    end
-    --]]
 
     -- Get targets list.
     local targets, end_target = self:extendTargetByBeam(target.x, target.y, range)
-    print('[WEAPONRY] Spear Targets:')
-    table.print(targets, '  ')
-    print(':[WEAPONRY] Spear Targets')
     -- No targets were found within range.
     if not targets or #targets == 0 then
-      print('[WEAPONRY] No Targets!')
       -- If we're the plain attack talent, then give up.
       if self.__talent_running and self.__talent_running.short_name == 'ATTACK' then
         return 0, false, {}
@@ -189,16 +189,16 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
     end
 
     -- Attack each target on the list.
-    weapon.__thrust_disabled = true
+    g.inc(weapon, '__thrust_disabled')
     local hit_original, hits = false, {}
     for i, thrust_target in pairs(targets) do
-      local hit = attackTargetWith(self, thrust_target, weapon, damtype, mult, force_dam)
+      local _, hit = attackTargetWith(self, thrust_target, weapon, damtype, mult, force_dam)
       if hit then
         table.insert(hits, thrust_target)
-        if target == thrust_target then hit_original = hit end
+        if target == thrust_target then hit_original = true end
       end
     end
-    weapon.__thrust_disabled = false
+    g.dec(weapon, '__thrust_disabled')
 
     local color = weapon.thrust_color or {}
     game.level.map:particleEmitter(
@@ -213,7 +213,13 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
 
   -- If not thrusting, just make a normal attack.
   ::normal_attack::
-  return attackTargetWith(self, target, weapon, damtype, mult, force_dam)
+
+  -- Try to do a normal attack.
+  if self:combatCanMelee(weapon, target) then
+    return attackTargetWith(self, target, weapon, damtype, mult, force_dam)
+  end
+
+  return 0, false, {}
 end
 
 -- Get the strength of an accuracy effect.
@@ -270,20 +276,40 @@ end
 -- Alternate Damage Modifiers
 
 function _M:getDammod(weapon)
-  local sub_cun_to_str =
-    self:knowTalent('T_LETHALITY') and
-    weapon.talented and weapon.talented == 'knife'
+  -- List of stats we're substituting.
+  local stat_subs, stat_kills = {}, {}
+
+  -- Check psi combat.
+  if self.use_psi_combat then
+    stat_subs.str = 'wil'
+    stat_subs.dex = 'cun'
+    stat_kills.str = true
+    stat_kills.dex = true
+  end
+
+  -- Lethality overrides psi combat.
+  if self:knowTalent('T_LETHALITY') and
+    weapon.talented and
+    weapon.talented == 'knife'
+  then
+    stat_subs.str = 'cun'
+    stat_kills.str = true
+  end
+
+  local substitute_stats = function(dammod)
+    for from, to in pairs(stat_subs) do
+      dammod[to] = (dammod[from] or 0) + (dammod[to] or 0)
+      if dammod[to] == 0 then dammod[to] = nil end
+      dammod[from] = nil
+    end
+  end
 
   -- If the option is turned off, or there is no alt dammod, default to normal behavior.
   if config.settings.tome.grayswandir_weaponry_dammod_swapping == false or
     not weapon.alt_dammod
   then
-    -- Sum cun into strength.
     local dammod = table.clone(weapon.dammod) or {str = 0.6}
-    if sub_cun_to_str then
-      dammod.cun = (dammod.cun or 0) + (dammod.str or 0)
-      dammod.str = nil
-    end
+    substitute_stats(dammod)
     return dammod
   end
 
@@ -292,14 +318,10 @@ function _M:getDammod(weapon)
   local highest_dammod = function(dammod)
     local stat, mod, highest = nil, nil, 0
     for key, value in pairs(dammod) do
-      -- Collapse cun and str into one value for lethality.
-      if sub_cun_to_str then
-        if key == 'str' then
-          key = 'cun'
-        elseif key == 'cun' then
-          value = 0
-        end
-      end
+      -- Substitute stats.
+      if stat_subs[key] then key = stat_subs[key] end
+      if stat_kills[key] then value = 0 end
+
       local score
       -- Integer keys are 'highest of' dammod
       if tonumber(key) then
@@ -323,7 +345,8 @@ function _M:getDammod(weapon)
     if tonumber(key) then
       key, value = highest_dammod(value)
     end
-    if sub_cun_to_str and key == 'str' then key = 'cun' end
+    if stat_subs[key] then key = stat_subs[key] end
+    if stat_kills[key] then value = 0 end
     dammod[key] = (dammod[key] or 0) + value
   end
 
@@ -347,5 +370,21 @@ function _M:combatDamage(weapon, adddammod)
 
   return unpack(damage)
 end
+
+
+-- Check if actor is unarmed
+local isUnarmed = _M.isUnarmed
+function _M:isUnarmed()
+  local main = g.get(self:getInven("MAINHAND"), 1)
+	local off = g.get(self:getInven("OFFHAND"), 1)
+  if (not main or main.allow_unarmed) and
+    (not off or off.allow_unarmed)
+  then return true end
+
+  return isUnarmed(self)
+end
+
+-- Specially mark psi combat slots.
+_M.psi_combat_slots = {'PSIONIC_FOCUS'}
 
 return _M

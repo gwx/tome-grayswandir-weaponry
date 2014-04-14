@@ -3,12 +3,13 @@ if config.settings.tome.grayswandir_weaponry_throwing_knives ~= false then
   newEntity{
     define_as = 'BASE_THROWKNIFE',
     slot = 'MAINHAND', offslot = 'OFFHAND',
-    type = 'weapon', subtype='throwing knife',
+    type = 'weapon', subtype='throwing knives',
     add_name = ' (#COMBAT_AMMO#)',
     display = '/', color=colors.WHITE, image = resolvers.image_material('knife', 'metal'),
     encumber = 3,
     rarity = 8,
     metallic = true,
+    exotic = true,
     is_own_ammo = true,
     archery_kind = 'knife', archery_ammo = 'knife',
     archery = false, -- Can also melee hit.

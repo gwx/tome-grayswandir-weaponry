@@ -31,4 +31,29 @@ function _M.mapv(source, f)
   return result
 end
 
+--[=[
+  If the table has the exact given value.
+]=]
+function _M.hasv(table, value)
+  for _, v in pairs(table) do
+    if v == value then return true end
+  end
+  return false
+end
+
+--[=[
+  Increment the given value by 1, creating it if it doesn't exist.
+]=]
+function _M.inc(table, key, amount)
+  table[key] = (table[key] or 0) + (amount or 1)
+  if table[key] <= 0 then table[key] = nil end
+end
+
+--[=[
+  Decrement the given value by 1, setting to nil if it reaches 0.
+]=]
+function _M.dec(table, key, amount)
+  _M.inc(table, key, -(amount or 1))
+end
+
 return _M

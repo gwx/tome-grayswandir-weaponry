@@ -1,5 +1,7 @@
 local _M = loadPrevious(...)
 
+local g = require 'grayswandir'
+
 -- Drains a percent of a turn's energy, up to limit percent (default 100%).
 function _M:drain_energy(percent, limit)
   percent = percent or 10
@@ -82,6 +84,26 @@ function _M:useEnergy(val)
   end
 end
 
+-- Allow pools to be learned for any attribute, not just talents.
+-- talent is the pool to be learned, reason is the key to save as.
+function _M:modifyPool(pool_id, reason, amount)
+  if not amount then return end
+  local pool = self.resource_pool_refs[pool_id]
+  if not pool then
+    pool = {}
+    self.resource_pool_refs[pool_id] = pool
+  end
+  g.inc(pool, reason, amount)
+  if next(pool) then
+    if not self:knowTalent(pool_id) then
+      self:learnTalent(pool_id, true)
+    end
+  else
+    if self:knowTalent(pool_id) then
+      self:unlearnTalent(pool_id)
+    end
+  end
+end
 
 
 return _M
