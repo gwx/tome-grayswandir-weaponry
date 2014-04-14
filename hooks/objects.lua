@@ -1,7 +1,7 @@
-local hook = function(self, data)
+local hook = function(self, data, force)
   local load_objects = function(name)
     local file = '/data-grayswandir-weaponry/objects/'..name..'.lua'
-    if data.loaded[file] then return end
+    if data.loaded[file] and not force then return end
     self:loadList(file, data.no_default, data.res, data.mod, data.loaded)
   end
   local load_egos = function(name)
@@ -15,12 +15,13 @@ local hook = function(self, data)
     load_objects('spears')
     load_objects('2hspears')
     load_objects('aurastones')
-    -- Hack all the daggers.
+
+    -- Hack things.
     load_objects('alt-dammods')
   end
 
   -- Existing Object Types
-  for _, name in pairs {'swords', 'maces', 'axes', '2hswords', '2hmaces', '2haxes', 'knifes', 'whips', '2htridents', 'bows', 'slings', 'gloves', 'gauntlets'} do
+  for _, name in pairs {'swords', 'maces', 'axes', '2hswords', '2hmaces', '2haxes', 'knifes', 'whips', '2htridents', 'bows', 'slings', 'gloves', 'gauntlets',} do
     local file = '/data/general/objects/'..name..'.lua'
     if data.file == file then load_objects(name) end
   end
@@ -44,5 +45,14 @@ local hook = function(self, data)
                   data.no_default, data.res, data.mod, data.loaded)
 
   end
+
+  -- Midnight hacking.
+  if data.file == '/data-midnight/sceptres.lua' then
+    load_objects('alt-sceptres', true)
+  end
+  if data.file == '/data-midnight/world-artifacts-far-east.lua' then
+    load_objects('alt-sceptres', true)
+  end
+
 end
 class:bindHook('Entity:loadList', hook)

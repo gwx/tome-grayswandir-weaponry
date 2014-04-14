@@ -3,9 +3,15 @@ local g = require 'grayswandir'
 
 -- New Weapon Masteries
 _M:addCombatTraining('spear', 'T_EXOTIC_WEAPONS_MASTERY')
+_M:addCombatTraining('aurastone', 'T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY')
+_M:addCombatTraining('staff', 'T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY')
+
+-- Add combat training to midnight's sceptres.
+_M:addCombatTraining('sceptre', 'T_WEAPONS_MASTERY')
+_M:addCombatTraining('sceptre', 'T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY')
 
 if 'Awesome' == config.settings.tome.nulltweaks_mastery then
-  _M:addCombatTraining('spear', 'T_GREATWEAPON_MASTERY')
+  _M:addCombatTraining('sceptre', 'T_EXOTIC_WEAPONS_MASTERY') -- nulltweaks greatweapon
   _M:addCombatTraining('spear', 'T_WEAPONS_MASTERY')
 end
 
@@ -408,5 +414,29 @@ end
 
 -- Specially mark psi combat slots.
 _M.psi_combat_slots = {'PSIONIC_FOCUS'}
+
+-- Make combat training show up properly in the tooltip
+function _M:combatGetTraining(weapon)
+	if not weapon then return nil end
+	if not weapon.talented then return nil end
+	if not _M.weapon_talents[weapon.talented] then return nil end
+	if type(_M.weapon_talents[weapon.talented]) == "table" then
+    local max, ktid = nil, nil
+    for i, tid in ipairs(_M.weapon_talents[weapon.talented]) do
+      if self:knowTalent(tid) then
+        local t = self:getTalentFromId(tid)
+        local strength = t.getDamage(self, t, weapon)
+        if not max or strength > max then
+          max = strength
+          ktid = tid
+        end
+      end
+    end
+		return self:getTalentFromId(ktid)
+	else
+		return self:getTalentFromId(_M.weapon_talents[weapon.talented])
+	end
+end
+
 
 return _M
