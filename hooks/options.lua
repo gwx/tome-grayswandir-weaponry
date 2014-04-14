@@ -1,3 +1,5 @@
+local GetQuantity = require "engine.dialogs.GetQuantity"
+
 local hook = function(self, data)
   if data.kind == 'gameplay' then
     local textzone = require 'engine.ui.Textzone'
@@ -31,6 +33,40 @@ local hook = function(self, data)
       table.insert(self.list, option)
     end
 
+    -- Numeric Option creation function.
+    local add_numeric_option = function(short_id, default, min, max, display_name, description)
+      local id = 'grayswandir_weaponry_'..short_id
+      -- Set option default.
+      if tome[id] == nil then tome[id] = default end
+      -- Create the new option.
+      local option = {
+        name = string.toTString(
+          ('#GOLD##{bold}#Weapons Pack: %s#WHITE##{normal}#')
+            :format(display_name)),
+        zone = textzone.new {
+          width = self.c_desc.w,
+          height = self.c_desc.h,
+          text = string.toTString(description),},
+        status = function(item)
+          return tostring(tome[id])
+        end,
+        fct = function(item)
+          local assign = function(value)
+            tome[id] = util.bound(value, min, max)
+            local name = 'tome.'..id
+            game:saveSettings(
+              name, ('%s = %s\n'):format(name, tostring(tome[id])))
+            self.c_list:drawItem(item)
+          end
+          game:registerDialog(
+            GetQuantity.new(
+              display_name,
+              ('[%d-%d]'):format(min, max),
+              tome[id], max, assign, min))
+        end,}
+      table.insert(self.list, option)
+    end
+
     -- Add misc. options.
     add_boolean_option(
       'dammod_swapping',
@@ -41,6 +77,11 @@ local hook = function(self, data)
       'alt_reload',
       'Alternate Reload',
       'This changes several aspects of reloading. Moving or waiting will now automatically reload. If you cannot reload your main quiver, your offset quiver will be reloaded instead. The reload talent is now instant use, costs 10 stamina, and refills your ammo directly instead of giving the reload buff.')
+
+    add_numeric_option(
+      'exotic_rarity', 0, 0, 1000,
+      'Exotic Item Rarity',
+      'This value is added to the rarity of all the Weapons Pack items, forcing them to generate less often.')
 
     -- Add options for each weapon type.
     local weapontypes = {'swordbreakers', 'rapiers', 'spears', 'whips', 'tridents', 'clubs', {'throwing_knives', 'Throwing Knives'}, 'aurastones',}

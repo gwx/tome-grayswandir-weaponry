@@ -45,7 +45,9 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
     base = 'BASE_AURASTONE',
     name = 'dull aurastone', short_name = 'dull',
     level_range = {1, 10},
-    require = {stat = {mag = 11,},},
+    require = {
+      stat = {mag = 11,},
+      talent = {{'T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY', 1,},},},
     cost = 8,
     material_level = 1,
     wielder = {
@@ -59,7 +61,9 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
     base = 'BASE_AURASTONE',
     name = 'shiny aurastone', short_name = 'shiny',
     level_range = {10, 20},
-    require = {stat = {mag = 16,},},
+    require = {
+      stat = {mag = 16,},
+      talent = {{'T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY', 1,},},},
     cost = 14,
     material_level = 2,
     wielder = {
@@ -73,7 +77,9 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
     base = 'BASE_AURASTONE',
     name = 'gleaming aurastone', short_name = 'gleaming',
     level_range = {20, 30},
-    require = {stat = {mag = 25,},},
+    require = {
+      stat = {mag = 25,},
+      talent = {{'T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY', 2,},},},
     cost = 20,
     material_level = 3,
     wielder = {
@@ -87,7 +93,9 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
     base = 'BASE_AURASTONE',
     name = 'glowing aurastone', short_name = 'glowing',
     level_range = {30, 40},
-    require = {stat = {mag = 34,},},
+    require = {
+      stat = {mag = 34,},
+      talent = {{'T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY', 2,},},},
     cost = 31,
     material_level = 4,
     wielder = {
@@ -101,7 +109,9 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
     base = 'BASE_AURASTONE',
     name = 'brilliant aurastone', short_name = 'brilliant',
     level_range = {40, 50},
-    require = {stat = {mag = 48,},},
+    require = {
+      stat = {mag = 48,},
+      talent = {{'T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY', 3,},},},
     cost = 43,
     material_level = 5,
     wielder = {

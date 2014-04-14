@@ -127,4 +127,16 @@ function _M:getRequirementDesc(who)
   return str
 end
 
+
+-- Make exotic entities have extra rarity.
+local init = _M.init
+function _M:init(t, no_default)
+  init(self, t, no_default)
+  if self.exotic and self.rarity and not self.__exotic_rarity_set then
+    local add = config.settings.tome.grayswandir_weaponry_exotic_rarity or 0
+    self.rarity = self.rarity + add
+    self.__exotic_rarity_set = true
+  end
+end
+
 return _M
