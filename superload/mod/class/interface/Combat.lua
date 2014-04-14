@@ -380,7 +380,7 @@ local combatDamage = _M.combatDamage
 function _M:combatDamage(weapon, adddammod)
   -- If the option is turned off, or there is no alt dammod, default to normal behavior.
   if config.settings.tome.grayswandir_weaponry_dammod_swapping == false or
-    not weapon.alt_dammod
+    not g.get(weapon, 'alt_dammod')
   then
     return combatDamage(self, weapon, adddammod)
   end
