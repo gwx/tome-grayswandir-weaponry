@@ -21,6 +21,24 @@ function _M.get(table, ...)
 end
 
 --[=[
+  Set the nested value in a table, creating empty tables as needed.
+]=]
+function _M.set(table, ...)
+  if type(table) ~= 'table' then return false end
+  local args = {...}
+  for i = 1, #args - 2 do
+    local key = args[i]
+    local subtable = table[key]
+    if not subtable then
+      subtable = {}
+      table[key] = subtable
+    end
+    table = subtable
+  end
+  table[args[#args - 1]] = args[#args]
+end
+
+--[=[
   Return the result of mapping f across the values of source.
 ]=]
 function _M.mapv(source, f)

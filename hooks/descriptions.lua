@@ -34,7 +34,8 @@ hook = function(self, data)
 
       -- Replace the line.
       local dm = {}
-      for stat, i in pairs(use_actor:getDammod(data.combat)) do
+      local dammod = use_actor:getDammod(data.combat, true)
+      for stat, i in pairs(dammod) do
         dm[#dm+1] = ('%d%% %s'):format(i * 100, stats.stats_def[stat].short_name:capitalize())
       end
       data.desc[i] = ('Uses stat%s: %s'):format(#dm > 1 and 's' or '',table.concat(dm, ', '))

@@ -291,7 +291,7 @@ end
 
 -- Alternate Damage Modifiers
 
-function _M:getDammod(weapon)
+function _M:getDammod(weapon, display)
   -- List of stats we're substituting.
   local stat_subs, stat_kills = {}, {}
 
@@ -325,6 +325,9 @@ function _M:getDammod(weapon)
     not weapon.alt_dammod
   then
     local dammod = table.clone(weapon.dammod) or {str = 0.6}
+    if display and weapon.display_add and weapon.display_add.dammod then
+      table.mergeAdd(dammod, weapon.display_add.dammod)
+    end
     substitute_stats(dammod)
     return dammod
   end
@@ -356,6 +359,9 @@ function _M:getDammod(weapon)
   end
 
   local dammod = {}
+  if display and weapon.display_add and weapon.display_add.dammod then
+    dammod = table.clone(weapon.display_add.dammod)
+  end
   for key, value in pairs(weapon.alt_dammod) do
     -- Integer keys are the 'highest of' dammod.
     if tonumber(key) then
