@@ -2,7 +2,8 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
 
   local aurastone_damtypes = {
     DamageType.FIRE, DamageType.ACID, DamageType.COLD, DamageType.LIGHTNING,
-    DamageType.ARCANE, DamageType.PHYSICAL, DamageType.BLIGHT, DamageType.TEMPORAL,}
+    DamageType.ARCANE, DamageType.PHYSICAL, DamageType.BLIGHT, DamageType.TEMPORAL,
+    DamageType.LIGHT, DamageType.DARKNESS,}
 
   newEntity{
     define_as = 'BASE_AURASTONE',
@@ -14,6 +15,7 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
     rarity = 14, -- high rarity until we get some decent egos for them.
     exotic = true,
     allow_unarmed = true,
+    power_source = {arcane = true,},
     on_wear = function(self, who)
       -- Enable mana.
       who:modifyPool('T_MANA_POOL', 'aurastone', 1)
@@ -37,8 +39,7 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
     desc = [[A small stone that exudes a faint magical aura.]],
     --randart_able = '/data/general/objects/random-artifacts/melee.lua',
     egos = '/data-grayswandir-weaponry/egos/aurastones.lua',
-    egos_chance = {prefix = resolvers.mbonus(40, 5),
-                   suffix = resolvers.mbonus(40, 5),},}
+    egos_chance = {prefix = 100, suffix = resolvers.mbonus(40, 5),},}
 
   newEntity{
     base = 'BASE_AURASTONE',
@@ -51,9 +52,8 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
       combat = {
         resource_strikes = {
           {cost = {mana = 1,},
-           damtype = resolvers.rngtable(aurastone_damtypes),
            dam = resolvers.rngavg(1, 3),
-           dammod = {mag = 0.4,},},},},},}
+           dammod = {mag = 0.3,},},},},},}
 
   newEntity{
     base = 'BASE_AURASTONE',
@@ -65,10 +65,9 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
     wielder = {
       combat = {
         resource_strikes = {
-          {cost = {mana = 2,},
-           damtype = resolvers.rngtable(aurastone_damtypes),
+          {cost = {mana = 1.5,},
            dam = resolvers.rngavg(3, 5),
-           dammod = {mag = 0.4,},},},},},}
+           dammod = {mag = 0.35,},},},},},}
 
   newEntity{
     base = 'BASE_AURASTONE',
@@ -80,8 +79,7 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
     wielder = {
       combat = {
         resource_strikes = {
-          {cost = {mana = 3,},
-           damtype = resolvers.rngtable(aurastone_damtypes),
+          {cost = {mana = 2,},
            dam = resolvers.rngavg(5, 8),
            dammod = {mag = 0.4,},},},},},}
 
@@ -95,10 +93,9 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
     wielder = {
       combat = {
         resource_strikes = {
-          {cost = {mana = 4,},
-           damtype = resolvers.rngtable(aurastone_damtypes),
+          {cost = {mana = 2.5,},
            dam = resolvers.rngavg(7, 10),
-           dammod = {mag = 0.4,},},},},},}
+           dammod = {mag = 0.45,},},},},},}
 
   newEntity{
     base = 'BASE_AURASTONE',
@@ -110,9 +107,8 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
     wielder = {
       combat = {
         resource_strikes = {
-          {cost = {mana = 5,},
-           damtype = resolvers.rngtable(aurastone_damtypes),
+          {cost = {mana = 3,},
            dam = resolvers.rngavg(10, 12),
-           dammod = {mag = 0.4,},},},},},}
+           dammod = {mag = 0.5,},},},},},}
 
 end

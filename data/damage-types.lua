@@ -8,6 +8,7 @@ newDamageType {
 
     if 'table' ~= _G.type(params) then params = {chance = params or 30} end
     if rng.percent(params.chance) and target:canBe(params.resist_type or 'pin') then
+      target:crossTierEffect(target.EFF_OFFBALANCE, src:combatAttack(params.weapon))
       target:setEffect('EFF_GRAYSWANDIR_FALLEN_OVER', 1, {
                          apply_power = params.apply_power or src:combatAttack(params.weapon)})
     else
