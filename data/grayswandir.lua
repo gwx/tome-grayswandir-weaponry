@@ -39,6 +39,50 @@ function _M.set(table, ...)
 end
 
 --[=[
+  Find the first pair which for which f(key, value) returns true.
+  returns the key, the value, and if it succeeded.
+]=]
+function _M.find(source, f)
+  for k, v in pairs(source) do
+    if f(k, v) then return k, v, true end
+  end
+  return nil, nil, false
+end
+
+--[=[
+  Find the first pair which for which f(value) returns true.
+  returns the key, the value, and if it succeeded.
+]=]
+function _M.findv(source, f)
+  for k, v in pairs(source) do
+    if f(v) then return k, v, true end
+  end
+  return nil, nil, false
+end
+
+--[=[
+  If the source contains the given key.
+  returns the key, the value, and if it succeeded.
+]=]
+function _M.hask(source, key)
+  for k, v in pairs(source) do
+    if k == key then return k, v, true end
+  end
+  return nil, nil, false
+end
+
+--[=[
+  If the source contains the given value.
+  returns the key, the value, and if it succeeded.
+]=]
+function _M.hasv(source, value)
+  for k, v in pairs(source) do
+    if v == value then return k, v, true end
+  end
+  return nil, nil, false
+end
+
+--[=[
   Return the result of mapping f across the values of source.
 ]=]
 function _M.mapv(source, f)
@@ -47,16 +91,6 @@ function _M.mapv(source, f)
     result[k] = f(v)
   end
   return result
-end
-
---[=[
-  If the table has the exact given value.
-]=]
-function _M.hasv(table, value)
-  for _, v in pairs(table) do
-    if v == value then return true end
-  end
-  return false
 end
 
 --[=[
@@ -72,6 +106,52 @@ end
 ]=]
 function _M.dec(table, key, amount)
   _M.inc(table, key, -(amount or 1))
+end
+
+--[=[
+  Changes a table so that # counts all the entries.
+]=]
+function _M.countable(table)
+  local meta = getmetatable(table)
+  if not meta then
+    meta = {}
+    setmetatable(table, meta)
+  end
+
+  if meta.countable_size then return end
+
+  local size = 0
+  for k, v in pairs(table) do
+    size = size + 1
+  end
+  meta.countable_size = size
+
+  local newindex = meta.__newindex
+  if newindex then
+    meta.__newindex = function(table, key, value)
+      local was = table[key]
+      newindex(table, key, value)
+      local is = table[key]
+      if was and is == nil then
+        meta.countable_size = meta.countable_size - 1
+      elseif was == nil and is then
+        meta.countable_size = meta.countable_size + 1
+      end
+    end
+  else
+    meta.__newindex = function(table, key, value)
+      local was = table[key]
+      rawset(table, key, value)
+      local is = rawget[key]
+      if was and is == nil then
+        meta.countable_size = meta.countable_size - 1
+      elseif was == nil and is then
+        meta.countable_size = meta.countable_size + 1
+      end
+    end
+  end
+
+  meta.__len = function(table) return meta.countable_size end
 end
 
 return _M
