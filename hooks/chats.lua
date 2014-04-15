@@ -171,11 +171,20 @@ hook = function(self, data)
 end
 class:bindHook('Chat:add', hook)
 
+
+
+
 -- Angolwen Staff Trainer
 local add_magic_weapon_training = function(chat, c)
   -- Make the training chat.
-  chat:addChat {
-    id = 'magic-weapon',
+end
+
+hook = function(self, data)
+  if self.name ~= 'angolwen-staves-store' then return end
+  if game.player:isTalentRevealed('T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY') then return end
+
+  self:addChat {
+    id = 'magic-weapon-mastery',
     text = [[I can teach you the basics of channeling magic through weapons (unhides Magic Weapon Mastery in the Combat Training tree) for 100 gold. This gives you basic proficiency with staves, sceptres, and aurastones.]],
     answers = {
       {cond = function(npc, player)
@@ -200,24 +209,10 @@ local add_magic_weapon_training = function(chat, c)
          player:revealTalent('T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY')
          player.changed = true
        end,},
-      {'No thanks'},},}
+      {'No thanks.'},},}
 
-
-  -- Modify the current chat to let you learn.
-  table.insert(c.answers, 3,
-               {'I wish to learn magical weapon combat.', jump = 'magic-weapon',})
+  -- Add the chat option in.
+  table.insert(self:get('welcome').answers, 3,
+               {'I wish to learn magical weapon combat.', jump = 'magic-weapon-mastery',})
 end
-
-hook = function(self, data)
-  if data.c.id ~= 'welcome' then return end
-  -- Don't need to do this if the player can already use it.
-  if game.player:isTalentRevealed('T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY') then return end
-  -- Look for the staff training option.
-  for _, reply in pairs(data.c.answers) do
-    if reply[1] == 'I am looking for staff training.' then
-      add_magic_weapon_training(self, data.c)
-      break
-    end
-  end
-end
-class:bindHook('Chat:add', hook)
+class:bindHook('Chat:load', hook)
