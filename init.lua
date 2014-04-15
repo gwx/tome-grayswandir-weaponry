@@ -18,6 +18,8 @@ description = [[This adds new weapon types and egos to the game.
 - Mindslayers can now equip ranged weapons in their psionic focus slot.
 - Aurastones are magic-based items that can be equipped to modify your unarmed attacks.
 
+This also adds Magic Weapon Mastery, which applies to staves, aurastones, and sceptres, and can be learned in Angolwen.
+
 This also includes all the changes made in the Archery Tweaks mod as an option, and should not be used with the Archery Tweaks mod.]]
 tags = {'weapon', 'whip', 'trident', 'melee', 'rapier', 'swordbreaker', 'spear', 'club', 'throw', 'psi', 'aurastone', 'aura', 'stone', 'magic',}
 
