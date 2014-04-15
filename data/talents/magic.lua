@@ -5,6 +5,7 @@ newTalent {
   require = {stat = {mag = function(level) return 12 + level * 6 end,},},
   mode = 'passive',
   hide = true,
+  points = 5,
 	getDamage = function(self, t) return 10 * t.getWeaponPower(self, t, 'default') end,
 	getPercentInc = function(self, t) return math.sqrt(t.getWeaponPower(self, t) / 5) / 2 end,
   getWeaponPower = function(self, t) return self:getTalentLevel(t) * t.getFactor(self, t) end,

@@ -23,10 +23,10 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
       -- Move resource strikes to be indexed by self. This is to get
       -- around them stacking.
       local strikes = self.wielder.combat.resource_strikes
-      if not strikes[self] then
+      if not strikes[self.uid] then
         local index, strike = next(strikes)
         strikes[index] = nil
-        strikes[self] = strike
+        strikes[self.uid] = strike
       end
     end,
     on_takeoff = function(self, who)
@@ -34,7 +34,7 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
       who:modifyPool('T_MANA_POOL', 'aurastone', -1)
 
       -- Remove the resource strike field on who.
-      who.combat.resource_strikes[self] = nil
+      who.combat.resource_strikes[self.uid] = nil
     end,
     desc = [[A small stone that exudes a faint magical aura. Those who are trained can channel magic through them while they are clenched in their fists, striking out with magical energies on every punch.]],
     --randart_able = '/data/general/objects/random-artifacts/melee.lua',
