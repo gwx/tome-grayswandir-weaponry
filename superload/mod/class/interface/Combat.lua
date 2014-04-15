@@ -228,7 +228,7 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
     if hit and g.get(weapon, 'resource_strikes') then
       local auto_melee = self.turn_procs.auto_melee_hit
       self.turn_procs.auto_melee_hit = true
-      for id, strike in pairs(weapon.resourceActo_strikes) do
+      for id, strike in pairs(weapon.resource_strikes) do
         local cost = strike.cost or {}
         if self:hasResources(cost) then
           self:attackTargetWith(target, strike, nil, 1)
