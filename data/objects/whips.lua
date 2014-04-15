@@ -7,6 +7,7 @@ if config.settings.tome.grayswandir_weaponry_whips ~= false then
   base.desc = 'A long, leather whip.'
   base.combat.accuracy_effect = 'whip'
   base.physspeed = 1
+	base.image = 'object/generic_whip.png'
 
   newEntity{
     base = 'BASE_WHIP',

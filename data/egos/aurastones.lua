@@ -24,7 +24,7 @@ for _, d in pairs(defs) do
     level_range = {1, 50,},
     rarity = 8,
     cost = 5,
-    image = 'object/'..d[3]..'.png',
+    --image = 'object/'..d[3]..'.png',
     wielder = {
       combat = {
         resource_strikes = {
@@ -38,7 +38,7 @@ for _, d in pairs(defs) do
     level_range = {1, 50,},
     rarity = 11,
     cost = 10,
-    image = 'object/'..d[5]..'.png',
+    --image = 'object/'..d[5]..'.png',
     wielder = {
       combat = {
         resource_strikes = {

@@ -9,10 +9,11 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
     define_as = 'BASE_AURASTONE',
     slot = 'MAINHAND', offslot = 'OFFHAND',
     type = 'weapon', subtype='aurastone',
-    display = '*', color=colors.WHITE, --image = resolvers.image_material('knife', 'metal'),
+    display = '*', color=colors.WHITE,
+		image = 'object/generic_aurastone.png',
     --moddable_tile = resolvers.moddable_tile('dagger'),
     encumber = 1,
-    rarity = 10, -- high rarity until we get some decent egos for them.
+    rarity = 10,
     exotic = true,
     allow_unarmed = true,
     power_source = {arcane = true,},
