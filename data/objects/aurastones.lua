@@ -12,7 +12,7 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
     display = '*', color=colors.WHITE, --image = resolvers.image_material('knife', 'metal'),
     --moddable_tile = resolvers.moddable_tile('dagger'),
     encumber = 1,
-    rarity = 14, -- high rarity until we get some decent egos for them.
+    rarity = 10, -- high rarity until we get some decent egos for them.
     exotic = true,
     allow_unarmed = true,
     power_source = {arcane = true,},
