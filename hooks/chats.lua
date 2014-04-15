@@ -1,4 +1,5 @@
 local chat = require 'engine.Chat'
+local g = require 'grayswandir'
 local hook
 
 -- Last Hope Merchant
@@ -173,14 +174,9 @@ class:bindHook('Chat:add', hook)
 
 
 
-
--- Angolwen Staff Trainer
-local add_magic_weapon_training = function(chat, c)
-  -- Make the training chat.
-end
-
+local magic_weapon_combat_chats = {'angolwen-staves-store', 'angolwen-academy'}
 hook = function(self, data)
-  if self.name ~= 'angolwen-staves-store' then return end
+  if not g.hasv(magic_weapon_combat_chats, self.name) then return end
   if game.player:isTalentRevealed('T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY') then return end
 
   self:addChat {
