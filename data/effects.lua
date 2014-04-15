@@ -91,7 +91,7 @@ newEffect {
   end,
   activate = function(self, eff)
     if eff.atk > eff.max then eff.atk = eff.max end
-    self:effectTemporaryValue(eff, 'combat_atk', eff.def)
+    self:effectTemporaryValue(eff, 'combat_atk', eff.atk)
     game.logSeen(self, '%s is now flat footed! (%d atk, %d dur)',
                  self.name:capitalize(), eff.atk, eff.dur)
   end,

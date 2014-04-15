@@ -56,7 +56,7 @@ local do_accuracy = function(self, weapon, target, atk, def)
   strength = self:getAccuracyEffectStrength(weapon, 'duel_disrupt')
   if strength then
     if rng.percent(self:getAccuracyEffect(weapon, atk, def, strength.power)) then
-      target:setEffect('EFF_GRAYSWANDIR_DUEL_DISRUPTION', strength.dur, {
+      target:setEffect('EFF_GRAYSWANDIR_FLAT_FOOTED', strength.dur, {
                               atk = strength.atk, max = strength.max})
     end
   end
