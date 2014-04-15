@@ -36,7 +36,7 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
       -- Remove the resource strike field on who.
       who.combat.resource_strikes[self] = nil
     end,
-    desc = [[A small stone that exudes a faint magical aura.]],
+    desc = [[A small stone that exudes a faint magical aura. Those who are trained can channel magic through them while they are clenched in their fists, striking out with magical energies on every punch.]],
     --randart_able = '/data/general/objects/random-artifacts/melee.lua',
     egos = '/data-grayswandir-weaponry/egos/aurastones.lua',
     egos_chance = {prefix = 100, suffix = resolvers.mbonus(40, 5),},}
@@ -54,8 +54,9 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
       combat = {
         resource_strikes = {
           {cost = {mana = 1,},
-           dam = resolvers.rngavg(1, 3),
-           dammod = {mag = 0.3,},},},},},}
+           talented = 'aurastone', accuracy_effect = 'staff',
+           dam = 1,
+           dammod = {mag = 0.1,},},},},},}
 
   newEntity{
     base = 'BASE_AURASTONE',
@@ -70,8 +71,9 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
       combat = {
         resource_strikes = {
           {cost = {mana = 1.5,},
-           dam = resolvers.rngavg(3, 5),
-           dammod = {mag = 0.35,},},},},},}
+           talented = 'aurastone', accuracy_effect = 'staff',
+           dam = 2,
+           dammod = {mag = 0.15,},},},},},}
 
   newEntity{
     base = 'BASE_AURASTONE',
@@ -86,8 +88,9 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
       combat = {
         resource_strikes = {
           {cost = {mana = 2,},
-           dam = resolvers.rngavg(5, 8),
-           dammod = {mag = 0.4,},},},},},}
+           talented = 'aurastone', accuracy_effect = 'staff',
+           dam = 3,
+           dammod = {mag = 0.2,},},},},},}
 
   newEntity{
     base = 'BASE_AURASTONE',
@@ -102,8 +105,9 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
       combat = {
         resource_strikes = {
           {cost = {mana = 2.5,},
-           dam = resolvers.rngavg(7, 10),
-           dammod = {mag = 0.45,},},},},},}
+           talented = 'aurastone', accuracy_effect = 'staff',
+           dam = 4,
+           dammod = {mag = 0.25,},},},},},}
 
   newEntity{
     base = 'BASE_AURASTONE',
@@ -118,7 +122,8 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
       combat = {
         resource_strikes = {
           {cost = {mana = 3,},
-           dam = resolvers.rngavg(10, 12),
-           dammod = {mag = 0.5,},},},},},}
+           talented = 'aurastone', accuracy_effect = 'staff',
+           dam = 5,
+           dammod = {mag = 0.3,},},},},},}
 
 end
