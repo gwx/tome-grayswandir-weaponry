@@ -122,5 +122,13 @@ function _M:useResources(resources)
   return true
 end
 
+-- Makes a hidden talent visible.
+function _M:revealTalent(talent_id)
+  g.set(self, '__show_special_talents', talent_id, true)
+end
+
+function _M:isTalentRevealed(talent_id)
+  return g.get(self, '__show_special_talents', talent_id)
+end
 
 return _M

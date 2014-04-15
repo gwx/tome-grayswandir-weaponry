@@ -1,4 +1,7 @@
 local chat = require 'engine.Chat'
+local hook
+
+-- Last Hope Merchant
 
 chat.last_hope_merchant = chat.last_hope_merchant or {}
 chat.last_hope_merchant.armours = {
@@ -162,8 +165,59 @@ local maker_list = function(chat)
 	return l
 end
 
-local hook = function(self, data)
+hook = function(self, data)
   if data.c.id ~= 'make' then return end
   data.c.answers = maker_list(self)
+end
+class:bindHook('Chat:add', hook)
+
+-- Angolwen Staff Trainer
+local add_magic_weapon_training = function(chat, c)
+  -- Make the training chat.
+  chat:addChat {
+    id = 'magic-weapon',
+    text = [[I can teach you the basics of channeling magic through weapons (unhides Magic Weapon Mastery in the Combat Training tree) for 100 gold. This gives you basic proficiency with staves, sceptres, and aurastones.]],
+    answers = {
+      {cond = function(npc, player)
+         return player.money >= 100 and
+           player:knowTalentType('technique/combat-training')
+       end,
+       'Yes, teach me.',
+       action = function(npc, player)
+         game.logPlayer(player, 'The staff carver teaches you the basics of channelling magical energy.')
+         player:incMoney(-100)
+         player:revealTalent('T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY')
+         player.changed = true
+       end,},
+      {cond = function(npc, player)
+         return player.money >= 100 and
+           not player:knowTalentType('technique/combat-training')
+      end,
+       'Yes, teach me. (You do not currently know the Combat Training tree, so you will not be able to put points into this talent until you also learn that.)',
+       action = function(npc, player)
+         game.logPlayer(player, 'The staff carver teaches you the basics of channelling magical energy.')
+         player:incMoney(-100)
+         player:revealTalent('T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY')
+         player.changed = true
+       end,},
+      {'No thanks'},},}
+
+
+  -- Modify the current chat to let you learn.
+  table.insert(c.answers, 3,
+               {'I wish to learn magical weapon combat.', jump = 'magic-weapon',})
+end
+
+hook = function(self, data)
+  if data.c.id ~= 'welcome' then return end
+  -- Don't need to do this if the player can already use it.
+  if game.player:isTalentRevealed('T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY') then return end
+  -- Look for the staff training option.
+  for _, reply in pairs(data.c.answers) do
+    if reply[1] == 'I am looking for staff training.' then
+      add_magic_weapon_training(self, data.c)
+      break
+    end
+  end
 end
 class:bindHook('Chat:add', hook)
