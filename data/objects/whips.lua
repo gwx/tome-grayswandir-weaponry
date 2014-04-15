@@ -6,6 +6,7 @@ if config.settings.tome.grayswandir_weaponry_whips ~= false then
   base.exotic = true
   base.desc = 'A long, leather whip.'
   base.combat.accuracy_effect = 'whip'
+  base.physspeed = 1
 
   newEntity{
     base = 'BASE_WHIP',
