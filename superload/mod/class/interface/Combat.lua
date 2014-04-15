@@ -226,16 +226,29 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
 
     -- Do resource strikes.
     if hit and g.get(weapon, 'resource_strikes') then
+
+			-- Weapon strikes are still buggy, so put some checks in here.
+			local strikes_to_remove = {}
+
       local auto_melee = self.turn_procs.auto_melee_hit
       self.turn_procs.auto_melee_hit = true
       for id, strike in pairs(weapon.resource_strikes) do
-        local cost = strike.cost or {}
-        if self:hasResources(cost) then
-          self:attackTargetWith(target, strike, nil, 1)
-          self:useResources(cost)
-        end
+				if strike.damtype == 0 then
+					table.insert(strikes_to_remove, id)
+				else
+					local cost = strike.cost or {}
+					if self:hasResources(cost) then
+						self:attackTargetWith(target, strike, nil, 1)
+						self:useResources(cost)
+					end
+				end
       end
       self.turn_procs.auto_melee_hit = auto_melee
+
+			-- Remove the marked strikes.
+			for _, id in pairs(strikes_to_remove) do
+				weapon.resource_strikes[id] = nil
+			end
     end
 
     return speed, hit, hits
