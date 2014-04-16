@@ -1,6 +1,5 @@
 local hook
 local stats = require 'engine.interface.ActorStats'
-local combat = require 'mod.class.interface.Combat'
 local g = require 'grayswandir'
 
 -- Combat Tooltip
@@ -24,7 +23,7 @@ hook = function(self, data)
 
       -- Special check for psionic focus.
       local old_psi = use_actor.use_psi_combat
-      for _, slot in pairs(combat.psi_combat_slots) do
+      for _, slot in pairs {'PSIONIC_FOCUS'} do
         slot = use_actor:getInven(slot)
         if slot and g.hasv(slot, self) then
           use_actor.use_psi_combat = true
