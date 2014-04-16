@@ -11,7 +11,7 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
     type = 'weapon', subtype='aurastone',
     display = '*', color=colors.WHITE,
 		image = 'object/generic_aurastone.png',
-    --moddable_tile = resolvers.moddable_tile('dagger'),
+    moddable_tile = '%s_aurastone',
     encumber = 1,
     rarity = 10,
     exotic = true,
