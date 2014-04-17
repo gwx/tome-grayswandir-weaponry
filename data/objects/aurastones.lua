@@ -1,10 +1,5 @@
 if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
 
-  local aurastone_damtypes = {
-    DamageType.FIRE, DamageType.ACID, DamageType.COLD, DamageType.LIGHTNING,
-    DamageType.ARCANE, DamageType.PHYSICAL, DamageType.BLIGHT, DamageType.TEMPORAL,
-    DamageType.LIGHT, DamageType.DARKNESS,}
-
   newEntity{
     define_as = 'BASE_AURASTONE',
     slot = 'MAINHAND', offslot = 'OFFHAND',
@@ -13,7 +8,7 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
 		image = 'object/generic_aurastone.png',
     moddable_tile = '%s_aurastone',
     encumber = 1,
-    rarity = 10,
+    rarity = 8,
     exotic = true,
     allow_unarmed = true,
     power_source = {arcane = true,},
