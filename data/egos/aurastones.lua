@@ -4,16 +4,16 @@ local rmm100 = function(a, b)
 end
 
 local defs = {
-  {'FIRE', 'warm', 'garnet', 'burning', 'ruby',},
-  {'COLD', 'cool', 'lapis_lazuli', 'freezing', 'sapphire',},
-  {'LIGHTNING', 'charged', 'fireopal', 'shocking', 'topaz',},
-  {'ARCANE', 'enchanted', 'amethyst', 'pure', 'pearl',},
-  {'PHYSICAL', 'opaque', 'agate', 'hardened', 'aquamarine',},
-  {'LIGHT', 'transparent', 'quartz', 'clear', 'zircon',},
-  {'DARKNESS', 'clouded', 'ametrine', 'blackened', 'onyx',},
-  {'TEMPORAL', 'old', 'turquoise', 'ancient', 'jade',},
-  {'ACID', 'rough', 'amber', 'acidic', 'emerald',},
-  {'BLIGHT', 'cracked', 'spinel', 'foul', 'bloodstone',},}
+  {'FIRE', 'warm', 'burning',},
+  {'COLD', 'cool', 'freezing',},
+  {'LIGHTNING', 'charged', 'shocking',},
+  {'ARCANE', 'enchanted', 'pure',},
+  {'PHYSICAL', 'opaque', 'hardened',},
+  {'LIGHT', 'transparent', 'clear',},
+  {'DARKNESS', 'clouded', 'blackened',},
+  {'TEMPORAL', 'old', 'ancient',},
+  {'ACID', 'rough', 'acidic',},
+  {'BLIGHT', 'cracked', 'foul',},}
 
 for _, d in pairs(defs) do
 
@@ -24,7 +24,6 @@ for _, d in pairs(defs) do
     level_range = {1, 50,},
     rarity = 8,
     cost = 5,
-    --image = 'object/'..d[3]..'.png',
     wielder = {
       combat = {
         resource_strikes = {
@@ -33,12 +32,11 @@ for _, d in pairs(defs) do
 
   newEntity {
     power_source = {arcane = true,},
-    name = d[4]..' ', prefix = true, instant_resolve = true,
-    keywords = {[d[4]] = true,},
+    name = d[3]..' ', prefix = true, instant_resolve = true,
+    keywords = {[d[3]] = true,},
     level_range = {1, 50,},
     rarity = 11,
     cost = 10,
-    --image = 'object/'..d[5]..'.png',
     wielder = {
       combat = {
         resource_strikes = {
