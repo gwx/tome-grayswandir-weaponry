@@ -93,6 +93,14 @@ function _M:combatCanThrust(combat, target)
     not combat.__thrust_disabled
 end
 
+-- If we can do a sweeping attack with the given weapon's combat table.
+function _M:combatCanSweep(combat, target)
+  return target ~= self and
+		g.get(combat, 'sweep_attack') and
+		not g.get(self, '__talent_running', '__sweep_disabled') and
+    not combat.__sweep_disabled
+end
+
 -- Extend a single target to a beam attack.
 function _M:extendTargetByBeam(x, y, range)
   if not x or not y then return end
@@ -178,6 +186,24 @@ end
 
 local attackTargetWith = _M.attackTargetWith
 function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
+	-- Expand this into a full sweep attack.
+	if self:combatCanSweep(weapon, target) and target then
+		local dir = util.getDir(target.x, target.y, self.x, self.y)
+		if dir == 5 then return nil end
+		local lx, ly = util.coordAddDir(self.x, self.y, util.dirSides(dir, self.x, self.y).left)
+		local rx, ry = util.coordAddDir(self.x, self.y, util.dirSides(dir, self.x, self.y).right)
+		local lt = game.level.map(lx, ly, game.level.map.ACTOR)
+		local rt = game.level.map(rx, ry, game.level.map.ACTOR)
+
+		g.inc(weapon, '__sweep_disabled')
+		if lt then self:attackTargetWith(lt, weapon, damtype, mult, force_dam) end
+		local results = {self:attackTargetWith(target, weapon, damtype, mult, force_dam)}
+		if rt then self:attackTargetWith(rt, weapon, damtype, mult, force_dam) end
+		g.dec(weapon, '__sweep_disabled')
+
+		return unpack(results)
+	end
+
   -- Expand this into a full set of thrust attacks.
   if self:combatCanThrust(weapon, target) then
     local range = weapon.thrust_range + 1

@@ -1,5 +1,6 @@
 load '/data-grayswandir-weaponry/talents/archery.lua'
 load '/data-grayswandir-weaponry/talents/thrust.lua'
+load '/data-grayswandir-weaponry/talents/sweep.lua'
 load '/data-grayswandir-weaponry/talents/magic.lua'
 load '/data-grayswandir-weaponry/talents/swordbreakers.lua'
 load '/data-grayswandir-weaponry/talents/psi.lua'

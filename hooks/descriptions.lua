@@ -4,6 +4,9 @@ local g = require 'grayswandir.utils'
 
 -- Combat Tooltip
 hook = function(self, data)
+  if data.combat.sweep_attack then
+		data.desc:add('Sweep Attack: This weapon hits nearby targets.\n')
+	end
   if data.combat.thrust_range then
     data.desc:add(('Thrust Range: #LIGHT_GREEN#%d#LAST#\n'):format(data.combat.thrust_range + 1))
   end
