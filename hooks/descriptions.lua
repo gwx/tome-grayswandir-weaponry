@@ -1,6 +1,6 @@
 local hook
 local stats = require 'engine.interface.ActorStats'
-local g = require 'grayswandir'
+local g = require 'grayswandir.utils'
 
 -- Combat Tooltip
 hook = function(self, data)

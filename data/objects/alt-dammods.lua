@@ -1,4 +1,4 @@
-local g = require 'grayswandir'
+local g = require 'grayswandir.utils'
 local glovetab = { dam=1, atk=1, apr=0, physcrit=0, physspeed =0.6, dammod={str=1}, damrange=1.1 }
 
 for i, e in ipairs(loading_list) do

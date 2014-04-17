@@ -1,4 +1,4 @@
-local g = require 'grayswandir'
+local g = require 'grayswandir.utils'
 
 for i, e in ipairs(loading_list) do
   -- Hack all sceptres to use their own talented field

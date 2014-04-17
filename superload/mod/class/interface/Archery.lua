@@ -1,5 +1,5 @@
 local _M = loadPrevious(...)
-local g = require 'grayswandir'
+local g = require 'grayswandir.utils'
 local talents = require 'engine.interface.ActorTalents'
 
 -- Get the current reload rate.

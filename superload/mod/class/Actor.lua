@@ -1,6 +1,6 @@
 local _M = loadPrevious(...)
 
-local g = require 'grayswandir'
+local g = require 'grayswandir.utils'
 
 -- Drains a percent of a turn's energy, up to limit percent (default 100%).
 function _M:drain_energy(percent, limit)

@@ -1,4 +1,4 @@
-local g = require 'grayswandir'
+local g = require 'grayswandir.utils'
 
 load '/data/general/objects/egos/bow.lua'
 

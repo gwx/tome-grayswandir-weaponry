@@ -1,5 +1,5 @@
 local chat = require 'engine.Chat'
-local g = require 'grayswandir'
+local g = require 'grayswandir.utils'
 local hook
 
 -- Last Hope Merchant

@@ -1,4 +1,4 @@
-local g = require 'grayswandir'
+local g = require 'grayswandir.utils'
 local addtab = { dam=1, atk=1, apr=0, physcrit=0, physspeed =0.6, dammod={str=1}, damrange=1.1 }
 --loading_list.BASE_GLOVES.egos = '/data-grayswandir-weaponry/egos/gloves.lua'
 g.set(loading_list.BASE_GLOVES, 'wielder', 'combat', 'display_add', addtab)

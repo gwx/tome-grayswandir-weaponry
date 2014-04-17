@@ -1,5 +1,5 @@
 local _M = loadPrevious(...)
-local g = require 'grayswandir'
+local g = require 'grayswandir.utils'
 
 -- New Weapon Masteries
 _M:addCombatTraining('spear', 'T_EXOTIC_WEAPONS_MASTERY')
