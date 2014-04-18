@@ -7,7 +7,7 @@ local hook = function(self, data)
     self.list = self.list or {}
 
     -- Option Creation function.
-    local add_boolean_option = function(short_id, display_name, description)
+    local add_boolean_option = function(short_id, display_name, description, action)
       local id = 'grayswandir_weaponry_'..short_id
       -- Make options default to on.
       if tome[id] == nil then tome[id] = true end
@@ -29,6 +29,7 @@ local hook = function(self, data)
             game:saveSettings(
               name, ('%s = %s\n'):format(name, tostring(tome[id])))
             self.c_list:drawItem(item)
+						action(tome[id])
           end,}
       table.insert(self.list, option)
     end
@@ -76,7 +77,13 @@ local hook = function(self, data)
     add_boolean_option(
       'alt_reload',
       'Alternate Reload',
-      'This changes several aspects of reloading. Moving or waiting will now automatically reload. If you cannot reload your main quiver, your offset quiver will be reloaded instead. The reload talent is now instant use, costs 10 stamina, and refills your ammo directly instead of giving the reload buff.')
+      'This changes several aspects of reloading. Moving or waiting will now automatically reload. If you cannot reload your main quiver, your offset quiver will be reloaded instead. The reload talent is now instant use, costs 10 stamina, and refills your ammo directly instead of giving the reload buff.',
+			function (on)
+				local talents = require 'engine.interface.ActorTalents'
+				local talent = talents.talents_def.T_RELOAD
+				if talent then talent.no_energy = on end
+			end
+		)
 
     add_numeric_option(
       'exotic_rarity', 0, 0, 1000,

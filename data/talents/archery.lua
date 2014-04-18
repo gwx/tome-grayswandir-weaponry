@@ -19,9 +19,7 @@ t.stamina = function(self, t)
   return config.settings.tome.grayswandir_weaponry_alt_reload ~= false
     and 10 or 0
 end
-t.no_energy = function(self, t)
-  return config.settings.tome.grayswandir_weaponry_alt_reload ~= false
-end
+t.no_energy = (config.settings.tome.grayswandir_weaponry_alt_reload ~= false)
 local reload_on_pre_use = t.on_pre_use
 t.on_pre_use = function(self, t, sient)
   if config.settings.tome.grayswandir_weaponry_alt_reload == false then
