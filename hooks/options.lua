@@ -29,7 +29,7 @@ local hook = function(self, data)
             game:saveSettings(
               name, ('%s = %s\n'):format(name, tostring(tome[id])))
             self.c_list:drawItem(item)
-						action(tome[id])
+						if action then action(tome[id]) end
           end,}
       table.insert(self.list, option)
     end
