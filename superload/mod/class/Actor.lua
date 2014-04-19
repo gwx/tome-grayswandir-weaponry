@@ -100,7 +100,8 @@ function _M:useEnergy(val)
   if not self.__talent_running and
     not self.__talent_running_post
   then
-    if config.settings.tome.grayswandir_weaponry_alt_reload ~= false then
+		local conf = config.settings.tome.grayswandir_weaponry_alt_reload
+    if conf == 'alternate' then
       if self.reload then self:reload() end
     end
   end

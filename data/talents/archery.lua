@@ -16,14 +16,20 @@ end
 -- RELOAD
 t = Talents.talents_def.T_RELOAD
 t.stamina = function(self, t)
-  return config.settings.tome.grayswandir_weaponry_alt_reload ~= false
+  return config.settings.tome.grayswandir_weaponry_alt_reload ~= 'normal'
     and 10 or 0
 end
-t.no_energy = (config.settings.tome.grayswandir_weaponry_alt_reload ~= false)
+t.no_energy = (config.settings.tome.grayswandir_weaponry_alt_reload == 'alternate')
 local reload_on_pre_use = t.on_pre_use
 t.on_pre_use = function(self, t, sient)
-  if config.settings.tome.grayswandir_weaponry_alt_reload == false then
+	local conf = config.settings.tome.grayswandir_weaponry_alt_reload
+  if conf == 'normal' then
     return reload_on_pre_use(self, t, silent)
+	elseif conf == 'none' then
+		return false
+  end
+
+  if config.settings.tome.grayswandir_weaponry_alt_reload == false then
   end
   local ammo = self:needReload()
   if not ammo then return false end
@@ -31,9 +37,13 @@ t.on_pre_use = function(self, t, sient)
 end
 local reload_info = t.info
 t.info = function(self, t)
-  if config.settings.tome.grayswandir_weaponry_alt_reload == false then
+	local conf = config.settings.tome.grayswandir_weaponry_alt_reload
+  if conf == 'normal' then
     return reload_info(self, t)
+	elseif conf == 'none' then
+		return 'You have reload disabled.'
   end
+
   local ammo = self:needReload()
   if ammo then
     return ([[Reloads your %s (%d/%d) by %d.
@@ -47,7 +57,7 @@ end
 
 local reload_action = t.action
 t.action = function(self, t)
-  if config.settings.tome.grayswandir_weaponry_alt_reload == false then
+  if config.settings.tome.grayswandir_weaponry_alt_reload == 'normal' then
     return reload_action(self, t)
   end
 
@@ -74,7 +84,7 @@ for mastery, params in pairs(masteries) do
   local old_info = t.info
   if params.info == 'full' then
     t.info = function(self, t)
-      if config.settings.tome.grayswandir_weaponry_alt_reload == false then
+      if config.settings.tome.grayswandir_weaponry_alt_reload == 'normal' then
         return old_info(self, t)
       end
       return ([[Increases Physical Power by %d and increases weapon damage by %d%% when using %ss.

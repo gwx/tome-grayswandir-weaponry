@@ -5,7 +5,7 @@ local talents = require 'engine.interface.ActorTalents'
 -- Get the current reload rate.
 function _M:reloadRate(ammo)
   local kind = ammo.archery_ammo
-  if config.settings.tome.grayswandir_weaponry_alt_reload == false and
+  if config.settings.tome.grayswandir_weaponry_alt_reload == 'normal' and
     (kind == 'bow' or kind == 'sling' or not kind)
   then
     local t = talents.talents_def.T_RELOAD
@@ -101,7 +101,10 @@ function _M:getArcheryWeapons()
       if weapon.archery_kind ~= ammo.archery_ammo then goto invalid_weapon end
 
       local shots = combat and combat.shots_left
-      if not ammo.infinite and (not shots or shots <= 0) then goto invalid_weapon end
+      if not ammo.infinite and
+				(not shots or shots <= 0) and
+				config.settings.tome.grayswandir_weaponry_alt_reload ~= 'none'
+			then goto invalid_weapon end
 
       if combat.use_resource then
         local resource = self['get'..wcombat.use_resource.kind:capitalize()](self)
@@ -218,7 +221,11 @@ function _M:archeryAcquireTargetsWith(weapon, ammo, x, y, tg, params)
   if not tg.range then tg.range = wcombat.range end
   if not tg.type then tg.type = wcombat.tg_type or acombat.tg_type or 'bolt' end
 
-  local infinite = ammo.infinite or self:attr('infinite_ammo') or params.infinite
+  local infinite =
+		ammo.infinite or
+		self:attr('infinite_ammo') or
+		params.infinite or
+		config.settings.tome.grayswandir_weaponry_alt_reload == 'none'
 
   local targets = {}
   local grab_target = function(x, y)

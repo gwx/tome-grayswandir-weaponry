@@ -2,7 +2,7 @@
 local reloading = TemporaryEffects.tempeffect_def.EFF_RELOADING
 local reloading_on_timeout = reloading.on_timeout
 reloading.on_timeout = function(self, eff)
-  if config.settings.tome.grayswandir_weaponry_alt_reload ~= false then
+  if config.settings.tome.grayswandir_weaponry_alt_reload ~= 'normal' then
     self:breakReloading()
   else
     return reloading_on_timeout(self, eff)

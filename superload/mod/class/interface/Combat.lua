@@ -500,7 +500,7 @@ function _M:combatDefense(fake, add)
 	local def = combatDefense(self, fake, add)
 	local sub = self.combat_melee_sub_accuracy_defense
 	if sub and sub > 0 then
-		def = math.max(def, self:combatAttack())m
+		def = math.max(def, self:combatAttack())
 	end
 	return def
 end
