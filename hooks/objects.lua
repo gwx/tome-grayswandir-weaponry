@@ -21,7 +21,7 @@ local hook = function(self, data, force)
   end
 
   -- Existing Object Types
-  for _, name in pairs {'swords', 'maces', 'axes', '2hswords', '2hmaces', '2haxes', 'knifes', 'whips', '2htridents', 'bows', 'slings', 'gloves', 'gauntlets',} do
+  for _, name in pairs {'swords', 'maces', 'axes', '2hswords', '2hmaces', '2haxes', 'knifes', 'whips', '2htridents', 'bows', 'slings', 'gloves', 'gauntlets', 'shields',} do
     local file = '/data/general/objects/'..name..'.lua'
     if data.file == file then load_objects(name) end
   end

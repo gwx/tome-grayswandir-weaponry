@@ -137,3 +137,48 @@ newEffect{
 		self:removeTemporaryValue("silence", eff.tmpid)
 	end,
 }
+
+newEffect {
+	name = 'GUARDING', image = 'talents/block.png',
+	desc = 'Guarding',
+	long_desc = function(self, eff)
+		return ('Target uses Accuracy instead of Defense if it is higher and gains %d%% critical chance reduction. Anything that misses the target in melee will be set up for a counterattack that takses half time.')
+			:format(eff.crit)
+	end,
+	type = 'physical', subtype = {tactic = true,},
+	status = 'beneficial',
+	parameters = {count = 1, crit = 10,},
+	on_gain = function(self, eff) return nil, "+Guarding" end,
+	on_lose = function(self, eff) return nil, "-Guarding" end,
+	callbackOnMeleeMiss = function(self, eff, source, dam)
+		source:setEffect('EFF_GUARD_VULNERABLE', 2, {count = eff.count,})
+	end,
+	activate = function(self, eff)
+		self:effectTemporaryValue(eff, 'combat_melee_sub_accuracy_defense', 1)
+		self:effectTemporaryValue(eff, 'ignore_direct_crits', eff.crit)
+	end,}
+
+newEffect {
+	name = 'GUARD_VULNERABLE',
+	desc = 'Vulnerable',
+	long_desc = function(self, eff)
+		return 'You are vulnerable to counterattack from %s - they will attack you at doubled speed.'
+	end,
+	type = 'physical', subtype = {tactic = true,},
+	status = 'detrimental',
+	parameters = {count = 1},
+	on_gain = function(self, eff) return nil, '+Vulnerable' end,
+	on_lose = function(self, eff) return nil, '-Vulnerable' end,}
+
+newEffect {
+	name = 'GUARD_COUNTERATTACKING',
+	desc = 'Counterattacking',
+	long_desc = function(self, eff)
+		return 'Your attacks have doubled speed as long as you attack targets who are vulnerable from your guard.'
+	end,
+	type = 'physical', subtype = {tactic = true,},
+	status = 'beneficial',
+	parameters = {},
+	activate = function(self, eff)
+		self:effectTemporaryValue(eff, 'combat_physspeed_multiplier', 2)
+	end,}

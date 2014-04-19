@@ -73,6 +73,14 @@ function _M:get_thrust_range(combat_keys)
   return range
 end
 
+function _M:getBuckler(slot)
+	if self:attr('disarmed') then return nil, 'disarmed' end
+	local buckler = g.get(self:getInven(slot or 'OFFHAND'), 1)
+	if g.get(buckler, 'special_combat', 'talented') == 'buckler' then
+		return buckler
+	end
+end
+
 -- If we can do a normal melee hit with the given weapon's combat table.
 function _M:combatCanMelee(combat, target)
   -- Check range if we have a target.
@@ -184,8 +192,18 @@ function _M:extendTargetByBeam(x, y, range)
   return table.values(targets), target
 end
 
+local attackTarget = _M.attackTarget
+function _M:attackTarget(target, damtype, mult, noenergy, force_unharmed)
+	local uid = g.get(target, 'uid')
+	if uid then g.set(self.turn_procs, 'melee_targets', uid, true) end
+	return attackTarget(self, target, damtype, mult, noenergy, force_unharmed)
+end
+
 local attackTargetWith = _M.attackTargetWith
 function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
+	local uid = g.get(target, 'uid')
+	if uid then g.set(self.turn_procs, 'melee_targets', uid, true) end
+
 	-- Expand this into a full sweep attack.
 	if self:combatCanSweep(weapon, target) and target then
 		local dir = util.getDir(target.x, target.y, self.x, self.y)
@@ -477,5 +495,20 @@ function _M:combatGetTraining(weapon)
 	end
 end
 
+local combatDefense = _M.combatDefense
+function _M:combatDefense(fake, add)
+	local sub = self.combat_melee_sub_accuracy_defense
+	if sub and sub > 0 then
+		return self:combatAttack()
+	else
+		return combatDefense(self, fake, add)
+	end
+end
+
+local combatSpeed = _M.combatSpeed
+function _M:combatSpeed(weapon)
+	local mult = self.combat_physspeed_multiplier or 1
+	return combatSpeed(self, weapon) / mult
+end
 
 return _M

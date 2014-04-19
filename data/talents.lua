@@ -1,6 +1,4 @@
-load '/data-grayswandir-weaponry/talents/archery.lua'
-load '/data-grayswandir-weaponry/talents/thrust.lua'
-load '/data-grayswandir-weaponry/talents/sweep.lua'
-load '/data-grayswandir-weaponry/talents/magic.lua'
-load '/data-grayswandir-weaponry/talents/swordbreakers.lua'
-load '/data-grayswandir-weaponry/talents/psi.lua'
+local files = {'archery', 'buckler', 'thrust', 'sweep', 'magic', 'swordbreakers', 'psi'}
+for _, name in pairs(files) do
+	load('/data-grayswandir-weaponry/talents/'..name..'.lua')
+end

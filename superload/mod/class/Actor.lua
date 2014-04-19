@@ -2,6 +2,8 @@ local _M = loadPrevious(...)
 
 local g = require 'grayswandir.utils'
 
+_M.temporary_values_conf.combat_physspeed_multiplier = 'mult'
+
 -- Drains a percent of a turn's energy, up to limit percent (default 100%).
 function _M:drain_energy(percent, limit)
   percent = percent or 10
@@ -65,6 +67,26 @@ end
 -- Allow us to see if we're in the postUseTalent section.
 local postUseTalent = _M.postUseTalent
 function _M:postUseTalent(ab, ret, silent)
+	-- Handle guard vulnerability.
+	if self:hasEffect('EFF_GUARD_COUNTERATTACKING') then
+		-- Check against all targets
+		for uid, _ in pairs(self.turn_procs.melee_targets or {}) do
+			local target = __uids[uid]
+			local vuln = target:hasEffect('EFF_GUARD_VULNERABLE')
+			if vuln then
+				g.dec(vuln, 'count')
+				if not vuln.count then
+					target:removeEffect('EFF_GUARD_VULNERABLE')
+				end
+			else
+				self:removeEffect('EFF_GUARD_COUNTERATTACKING')
+			end
+		end
+	end
+
+	-- Get rid of saved melee targets.
+	self.turn_procs.melee_targets = nil
+
   self.__talent_running_post = ab
   local ret = {postUseTalent(self, ab, ret, silent)}
   self.__talent_running_post = nil
