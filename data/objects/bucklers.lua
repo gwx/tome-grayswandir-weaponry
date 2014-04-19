@@ -13,7 +13,7 @@ if config.settings.tome.grayswandir_weaponry_bucklers ~= false then
 		desc = [[Small handheld shield used for deflecting blows and misdirecting opponents.]],
 		randart_able = '/data/general/objects/random-artifacts/shields.lua',
 		special_combat = {talented='buckler', accuracy_effect='axe', damrange = 1.1,},
-		egos = '/data/general/objects/egos/shield.lua',
+    egos = '/data-grayswandir-weaponry/egos/bucklers.lua',
 		egos_chance = {prefix = resolvers.mbonus(40, 5), suffix = resolvers.mbonus(40, 5),},
 	}
 
