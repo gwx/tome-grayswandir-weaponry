@@ -14,7 +14,8 @@ if config.settings.tome.grayswandir_weaponry_clubs ~= false then
     combat = { talented = 'mace', damrange = 1.4, physspeed = 1, sound = {'actions/melee', pitch=0.6, vol=1.2}, sound_miss = {'actions/melee', pitch=0.6, vol=1.2}},
     desc = [[Blunt and deadly.]],
     randart_able = '/data/general/objects/random-artifacts/generic.lua',
-    egos = '/data-grayswandir-weaponry/egos/clubs.lua', egos_chance = { prefix=resolvers.mbonus(40, 5), suffix=resolvers.mbonus(40, 5) },
+    egos = '/data-grayswandir-weaponry/egos/clubs.lua',
+		egos_chance = {prefix = resolvers.mbonus(40, 5), suffix = resolvers.mbonus(40, 5),},
   }
 
   newEntity{
