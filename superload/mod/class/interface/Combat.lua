@@ -497,12 +497,12 @@ end
 
 local combatDefense = _M.combatDefense
 function _M:combatDefense(fake, add)
+	local def = combatDefense(self, fake, add)
 	local sub = self.combat_melee_sub_accuracy_defense
 	if sub and sub > 0 then
-		return self:combatAttack()
-	else
-		return combatDefense(self, fake, add)
+		def = math.max(def, self:combatAttack())m
 	end
+	return def
 end
 
 local combatSpeed = _M.combatSpeed
