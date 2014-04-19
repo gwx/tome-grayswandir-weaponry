@@ -112,15 +112,15 @@ local hook = function(self, data)
 
     add_cycling_option(
       'alt_reload',
-			{'normal', 'alternate', 'none',},
-      'Alternate Reload',
+			{'alternate', 'normal', 'none',},
+      'Reloading',
       [[This changes several aspects of reloading.
 
-Normal: Reloading works as it always has.
+#GOLD#Alternate#LAST#: Moving or waiting will now automatically reload. If you cannot reload your main quiver, your offset quiver will be reloaded instead. The reload talent is now instant use, costs 10 stamina, and refills your ammo directly instead of giving the reload buff.
 
-Alternate: Moving or waiting will now automatically reload. If you cannot reload your main quiver, your offset quiver will be reloaded instead. The reload talent is now instant use, costs 10 stamina, and refills your ammo directly instead of giving the reload buff.
+#GOLD#Normal#LAST#: Reloading works as it always has.
 
-None: You never need to reload.]],
+#GOLD#None#LAST#: You never need to reload.]],
 			function (value)
 				local talents = require 'engine.interface.ActorTalents'
 				local talent = talents.talents_def.T_RELOAD
