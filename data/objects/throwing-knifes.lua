@@ -7,6 +7,7 @@ if config.settings.tome.grayswandir_weaponry_throwing_knives ~= false then
     add_name = ' (#COMBAT_AMMO#)',
     display = '/', color=colors.WHITE,
 		image = 'object/generic_throwing_dagger.png',
+    moddable_tile = '%s_throwing_dagger',
     encumber = 3,
     rarity = 8,
     metallic = true,

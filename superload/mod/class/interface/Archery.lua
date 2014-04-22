@@ -185,8 +185,10 @@ function _M:archeryAcquireTargets(tg, params)
   if not x or not y then x, y = self:getTarget(aim_tg) end
   if not x or not y then return end
 
+	self:breakGuardCounterattacking(true)
+
   local targets = {}
-  local speed = 0, sound
+  local speed, sound = 0, nil
   for _, data in pairs(weapons) do
     local p = table.clone(params)
     p.offhand = data.offhand
@@ -196,7 +198,7 @@ function _M:archeryAcquireTargets(tg, params)
     if new_targets and #new_targets > 0 then
       table.append(targets, new_targets)
       speed = math.max(self:combatSpeed(weapon), speed)
-      if not sound then sound = data.weapon.sound end
+      if not sound then sound = data.weapon.combat.sound end
     end
   end
 

@@ -7,7 +7,7 @@ if config.settings.tome.grayswandir_weaponry_clubs ~= false then
     add_name = ' (#COMBAT#)',
     display = '/', color=colors.LIGHT_RED,
 		image = 'object/generic_club.png',
-    moddable_tile = resolvers.moddable_tile('mace'),
+    moddable_tile = '%s_club',
     encumber = 3,
     rarity = 7,
     exotic = true,

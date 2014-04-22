@@ -7,7 +7,7 @@ if config.settings.tome.grayswandir_weaponry_swordbreakers ~= false then
     add_name = ' (#COMBAT#)',
     display = '/', color=colors.WHITE,
 		image = 'object/generic_swordbreaker.png',
-    moddable_tile = resolvers.moddable_tile('dagger'),
+    moddable_tile = '%s_swordbreaker',
     encumber = 1,
     rarity = 7,
     metallic = true,
