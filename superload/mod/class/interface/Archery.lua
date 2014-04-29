@@ -185,8 +185,6 @@ function _M:archeryAcquireTargets(tg, params)
   if not x or not y then x, y = self:getTarget(aim_tg) end
   if not x or not y then return end
 
-	self:breakGuardCounterattacking(true)
-
   local targets = {}
   local speed, sound = 0, nil
   for _, data in pairs(weapons) do

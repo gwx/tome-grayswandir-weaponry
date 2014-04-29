@@ -201,6 +201,8 @@ end
 
 local attackTargetWith = _M.attackTargetWith
 function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
+	local final_speed, final_hit, all_hits = nil, nil, {}
+
 	local uid = g.get(target, 'uid')
 	if uid then g.set(self.turn_procs, 'melee_targets', uid, true) end
 
@@ -215,15 +217,13 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
 
 		g.inc(weapon, '__sweep_disabled')
 		if lt then self:attackTargetWith(lt, weapon, damtype, mult, force_dam) end
-		local results = {self:attackTargetWith(target, weapon, damtype, mult, force_dam)}
+		final_speed, final_hit, all_hits =
+			self:attackTargetWith(target, weapon, damtype, mult, force_dam)
 		if rt then self:attackTargetWith(rt, weapon, damtype, mult, force_dam) end
 		g.dec(weapon, '__sweep_disabled')
 
-		return unpack(results)
-	end
-
   -- Expand this into a full set of thrust attacks.
-  if self:combatCanThrust(weapon, target) then
+  elseif self:combatCanThrust(weapon, target) then
     local range = weapon.thrust_range + 1
 
     -- Get targets list.
@@ -240,13 +240,15 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
 
     -- Attack each target on the list.
     g.inc(weapon, '__thrust_disabled')
-    local hit_original, hits = false, {}
     for i, thrust_target in pairs(targets) do
-      local _, hit = attackTargetWith(self, thrust_target, weapon, damtype, mult, force_dam)
+      local speed, hit = attackTargetWith(self, thrust_target, weapon, damtype, mult, force_dam)
       if hit then
-        table.insert(hits, thrust_target)
-        if target == thrust_target then hit_original = true end
+        table.insert(all_hits, thrust_target)
       end
+			if target == thrust_target then
+				final_speed = speed
+				final_hit = hit
+			end
     end
     g.dec(weapon, '__thrust_disabled')
 
@@ -257,16 +259,28 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
         tx = end_target.x - self.x,
         ty = end_target.y - self.y,
         rmax = color.rmax, gmax = color.gmax, bmax = color.bmax})
-
-    return self:combatSpeed(weapon), hit_original, hits
   end
 
-  -- If not thrusting, just make a normal attack.
+  -- All other cases eventually condense down to this one.
   ::normal_attack::
 
   -- Try to do a normal attack.
-  if self:combatCanMelee(weapon, target) then
-    local speed, hit, hits = attackTargetWith(self, target, weapon, damtype, mult, force_dam)
+  if not final_speed and self:combatCanMelee(weapon, target) then
+
+		-- Gimmick speed if we're hitting a vulnerable target.
+		local guard_vulnerable
+		if g.get(target:hasEffect('EFF_GUARD_VULNERABLE'), 'src', self) then
+			guard_vulnerable = self:addTemporaryValue('combat_physspeed_multiplier', 2)
+		end
+
+		-- The only actual call to the original attackTargetWith.
+    final_speed, final_hit, all_hits =
+			attackTargetWith(self, target, weapon, damtype, mult, force_dam)
+
+		-- Ungimmick the speed.
+		if guard_vulnerable then
+			self:removeTemporaryValue('combat_physspeed_multiplier', guard_vulnerable)
+		end
 
     -- Do resource strikes.
     if hit and g.get(weapon, 'resource_strikes') then
@@ -295,10 +309,17 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
 			end
     end
 
-    return speed, hit, hits
+		-- I think callbackOnMeleeMiss is broken, so do buckler stuff here.
+		-- Give self the vulnerable effect if we miss a guarding opponent.
+		local guarding = target:hasEffect('EFF_GUARDING')
+		if not hit and guarding then
+			self:setEffect('EFF_GUARD_VULNERABLE', guarding.vuln_dur, {
+											 count = guarding.count,
+											 src = {[target] = true,},})
+		end
   end
 
-  return 0, false, {}
+  return final_speed, final_hit, all_hits
 end
 
 -- Get the strength of an accuracy effect.

@@ -147,12 +147,15 @@ newEffect {
 	end,
 	type = 'physical', subtype = {tactic = true,},
 	status = 'beneficial',
-	parameters = {count = 1, crit = 10,},
+	parameters = {count = 1, crit = 10, vuln_dur = 2,},
 	on_gain = function(self, eff) return nil, "+Guarding" end,
 	on_lose = function(self, eff) return nil, "-Guarding" end,
+-- Broken, I believe. Superloaded in Combat:atackTargetWith instead.
+--[[
 	callbackOnMeleeMiss = function(self, eff, source, dam)
-		source:setEffect('EFF_GUARD_VULNERABLE', 2, {count = eff.count,})
+		self:setEffect('EFF_GUARD_COUNTERATTACKING', 3, {})
 	end,
+--]]
 	activate = function(self, eff)
 		self:effectTemporaryValue(eff, 'combat_melee_sub_accuracy_defense', 1)
 		self:effectTemporaryValue(eff, 'ignore_direct_crits', eff.crit)
@@ -162,23 +165,20 @@ newEffect {
 	name = 'GUARD_VULNERABLE',
 	desc = 'Vulnerable',
 	long_desc = function(self, eff)
-		return 'You are vulnerable to counterattack from %s - they will attack you at doubled speed.'
+		local names = {}
+		for source, _ in pairs(eff.src) do
+			table.insert(names, source.name)
+		end
+		return ('You are vulnerable to counterattack from %s - they will attack you at doubled speed.')
+			:format(table.concat(names, ', '))
 	end,
 	type = 'physical', subtype = {tactic = true,},
 	status = 'detrimental',
 	parameters = {count = 1},
 	on_gain = function(self, eff) return nil, '+Vulnerable' end,
-	on_lose = function(self, eff) return nil, '-Vulnerable' end,}
-
-newEffect {
-	name = 'GUARD_COUNTERATTACKING',
-	desc = 'Counterattacking',
-	long_desc = function(self, eff)
-		return 'Your attacks have doubled speed as long as you attack targets who are vulnerable from your guard.'
+	on_lose = function(self, eff) return nil, '-Vulnerable' end,
+	on_merge = function(self, old_eff, new_eff)
+		table.merge(new_eff.src, old_eff.src)
+		return new_eff
 	end,
-	type = 'physical', subtype = {tactic = true,},
-	status = 'beneficial',
-	parameters = {},
-	activate = function(self, eff)
-		self:effectTemporaryValue(eff, 'combat_physspeed_multiplier', 2)
-	end,}
+}

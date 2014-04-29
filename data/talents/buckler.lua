@@ -29,7 +29,6 @@ newTalent {
 		self:setEffect('EFF_GUARDING', 1, {
 										 count = 1,
 										 crit = t.getCriticalChanceReduction(self, t),})
-		self:setEffect('EFF_GUARD_COUNTERATTACKING', 4, {})
 		return true
 	end,
 	info = function(self, t)
