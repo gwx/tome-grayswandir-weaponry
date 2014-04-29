@@ -196,7 +196,36 @@ local attackTarget = _M.attackTarget
 function _M:attackTarget(target, damtype, mult, noenergy, force_unharmed)
 	local uid = g.get(target, 'uid')
 	if uid then g.set(self.turn_procs, 'melee_targets', uid, true) end
-	return attackTarget(self, target, damtype, mult, noenergy, force_unharmed)
+
+	local ret = {attackTarget(self, target, damtype, mult, noenergy, force_unharmed)}
+
+	-- Vulnerable speed increase taken care of in attackTargetWith.
+	-- We just need to take care of decrementing the counter here.
+	if self.did_energy then
+		-- First check if we only hit vulnerable targets.
+		local all_vulnerable = true
+		for uid, _ in pairs(self.turn_procs.melee_targets or {}) do
+			local vulnerable = __uids[uid]:hasEffect('EFF_GUARD_VULNERABLE')
+			if not g.get(vulnerable, 'src', self) then
+				all_vulnerable = false
+			end
+		end
+		-- If we have, then do all the vulnerable stuff.
+		if all_vulnerable then
+			for uid, _ in pairs(self.turn_procs.melee_targets or {}) do
+				-- Do the countdown.
+				local vulnerable = __uids[uid]:hasEffect('EFF_GUARD_VULNERABLE')
+				vulnerable.count = vulnerable.count - 1
+				if vulnerable.count <= 0 then
+					target:removeEffect('EFF_GUARD_VULNERABLE')
+				end
+			end
+		end
+		-- Consume the targets.
+		self.turn_procs.melee_targets = {}
+	end
+
+	return unpack(ret)
 end
 
 local attackTargetWith = _M.attackTargetWith
@@ -281,14 +310,6 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
 		-- Ungimmick the speed.
 		if vulnerable_mod then
 			self:removeTemporaryValue('combat_physspeed_multiplier', vulnerable_mod)
-		end
-
-		-- Reduce vulnerable count.
-		if vulnerable then
-			vulnerable.count = vulnerable.count - 1
-			if vulnerable.count == 0 then
-				target:removeEffect('EFF_GUARD_VULNERABLE')
-			end
 		end
 
     -- Do resource strikes.

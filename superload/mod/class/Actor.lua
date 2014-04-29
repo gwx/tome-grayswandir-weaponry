@@ -67,9 +67,45 @@ end
 -- Allow us to see if we're in the postUseTalent section.
 local postUseTalent = _M.postUseTalent
 function _M:postUseTalent(ab, ret, silent)
+
+	-- Do vulnerable checks.
+	local vulnerable_bonus
+	if not util.getval(ab.no_energy, self, ab) then
+		-- First check if we only hit vulnerable targets.
+		local all_vulnerable = true
+		for uid, _ in pairs(self.turn_procs.melee_targets or {}) do
+			local vulnerable = __uids[uid]:hasEffect('EFF_GUARD_VULNERABLE')
+			if not g.get(vulnerable, 'src', self) then
+				all_vulnerable = false
+			end
+		end
+		-- If we have, then do all the vulnerable stuff.
+		if all_vulnerable then
+			for uid, _ in pairs(self.turn_procs.melee_targets or {}) do
+				-- Do the countdown.
+				local vulnerable = __uids[uid]:hasEffect('EFF_GUARD_VULNERABLE')
+				vulnerable.count = vulnerable.count - 1
+				if vulnerable.count <= 0 then
+					target:removeEffect('EFF_GUARD_VULNERABLE')
+				end
+			end
+			-- Apply vulnerable bonus.
+			vulnerable_bonus = self:addTemporaryValue('combat_physspeed_multiplier', 2)
+		end
+	end
+
   self.__talent_running_post = ab
   local ret = {postUseTalent(self, ab, ret, silent)}
   self.__talent_running_post = nil
+
+	-- Get rid of vulnerable bonus.
+	if vulnerable_bonus then
+		self:removeTemporaryValue('combat_physspeed_multiplier', vulnerable_bonus)
+	end
+
+	-- Cancel out all the hits.
+	self.turn_procs.melee_targets = {}
+
   return unpack(ret)
 end
 
