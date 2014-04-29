@@ -9,8 +9,7 @@ t.action = function(self, t)
   local inven = self:getInven("INVEN")
   local d
   local filter = function(o)
-    return (o.type == "weapon" or o.type == "gem")
-			and o.subtype ~= "aurastone"
+    return (o.type == "weapon" and o.combat) or o.type == "gem"
   end
   local action = function(o, item)
     local pf = self:getInven("PSIONIC_FOCUS")
