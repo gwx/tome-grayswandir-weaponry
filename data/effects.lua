@@ -142,7 +142,7 @@ newEffect {
 	name = 'GUARDING', image = 'talents/block.png',
 	desc = 'Guarding',
 	long_desc = function(self, eff)
-		return ('Target uses Accuracy instead of Defense if it is higher and gains %d%% critical chance reduction. Anything that misses the target in melee will be set up for a counterattack that takses half time.')
+		return ('Target uses Accuracy instead of Defense if it is higher and gains %d%% critical chance reduction. Anything that misses the target in melee will be set up for a counterattack that takes half time.')
 			:format(eff.crit)
 	end,
 	type = 'physical', subtype = {tactic = true,},
