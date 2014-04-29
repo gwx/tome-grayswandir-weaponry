@@ -169,8 +169,8 @@ newEffect {
 		for source, _ in pairs(eff.src) do
 			table.insert(names, source.name)
 		end
-		return ('You are vulnerable to counterattack from %s - they will attack you at doubled speed.')
-			:format(table.concat(names, ', '))
+		return ('You are vulnerable to counterattack from %s - they will attack you at doubled speed, for %d more hits.')
+			:format(table.concat(names, ', '), eff.count)
 	end,
 	type = 'physical', subtype = {tactic = true,},
 	status = 'detrimental',
