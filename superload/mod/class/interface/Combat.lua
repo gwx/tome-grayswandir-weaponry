@@ -267,10 +267,11 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
   -- Try to do a normal attack.
   if not final_speed and self:combatCanMelee(weapon, target) then
 
+		local vulnerable = target:hasEffect('EFF_GUARD_VULNERABLE')
 		-- Gimmick speed if we're hitting a vulnerable target.
-		local guard_vulnerable
-		if g.get(target:hasEffect('EFF_GUARD_VULNERABLE'), 'src', self) then
-			guard_vulnerable = self:addTemporaryValue('combat_physspeed_multiplier', 2)
+		local vulnerable_mod
+		if g.get(vulnerable, 'src', self) then
+			vulnerable_mod = self:addTemporaryValue('combat_physspeed_multiplier', 2)
 		end
 
 		-- The only actual call to the original attackTargetWith.
@@ -278,8 +279,16 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
 			attackTargetWith(self, target, weapon, damtype, mult, force_dam)
 
 		-- Ungimmick the speed.
-		if guard_vulnerable then
-			self:removeTemporaryValue('combat_physspeed_multiplier', guard_vulnerable)
+		if vulnerable_mod then
+			self:removeTemporaryValue('combat_physspeed_multiplier', vulnerable_mod)
+		end
+
+		-- Reduce vulnerable count.
+		if vulnerable then
+			vulnerable.count = vulnerable.count - 1
+			if vulnerable.count == 0 then
+				target:removeEffect('EFF_GUARD_VULNERABLE')
+			end
 		end
 
     -- Do resource strikes.
