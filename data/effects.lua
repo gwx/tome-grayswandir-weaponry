@@ -147,7 +147,7 @@ newEffect {
 	end,
 	type = 'physical', subtype = {tactic = true,},
 	status = 'beneficial',
-	parameters = {count = 1, crit = 10, vuln_dur = 2,},
+	parameters = {count = 2, crit = 10, vuln_dur = 2,},
 	on_gain = function(self, eff) return nil, "+Guarding" end,
 	on_lose = function(self, eff) return nil, "-Guarding" end,
 -- Broken, I believe. Superloaded in Combat:atackTargetWith instead.

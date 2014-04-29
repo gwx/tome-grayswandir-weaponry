@@ -27,7 +27,7 @@ newTalent {
 		local buckler = self:getBuckler()
 		if not buckler then return end
 		self:setEffect('EFF_GUARDING', 1, {
-										 count = 1,
+										 count = 2,
 										 crit = t.getCriticalChanceReduction(self, t),})
 		return true
 	end,
