@@ -26,7 +26,8 @@ newTalent {
 	action = function(self, t)
 		local buckler = self:getBuckler()
 		if not buckler then return end
-		self:setEffect('EFF_GUARDING', 1, {
+		local dur = 1 + (self:knowTalent('T_ETERNAL_GUARD') and 1 or 0)
+		self:setEffect('EFF_GUARDING', dur, {
 										 count = 2,
 										 crit = t.getCriticalChanceReduction(self, t),})
 		return true
@@ -35,3 +36,9 @@ newTalent {
 		return ('Use your buckler to actively deflect incoming attacks. While active, you use your Accuracy instead of Defense if it is higher and gain %d%% critical chance reduction. If someone misses you in melee then you will be in a position to counterattack them - your attack speed is doubled as long as you do nothing but attack such foes.')
 			:format(t.getCriticalChanceReduction(self, t))
 	end,}
+
+local eternal_guard = Talents:getTalentFromId('T_ETERNAL_GUARD')
+local eternal_guard_info = eternal_guard.info
+eternal_guard.info = function(self, t)
+	return eternal_guard_info(self, t):gsub('block', 'block or guard')
+end
