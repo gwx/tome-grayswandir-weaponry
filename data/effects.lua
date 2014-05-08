@@ -142,23 +142,29 @@ newEffect {
 	name = 'GUARDING', image = 'talents/block.png',
 	desc = 'Guarding',
 	long_desc = function(self, eff)
-		return ('Target uses Accuracy instead of Defense if it is higher and gains %d%% critical chance reduction. Anything that misses the target in melee will be set up for a counterattack that takes half time.')
-			:format(eff.crit)
+		local crit = '.'
+		if eff.vuln_crit > 0 then
+			crit = (' and have a %d%% higher crit chance.'):format(eff.vuln_crit)
+		end
+		return ('Target uses Accuracy instead of Defense if it is higher and gains %d%% critical chance reduction. Anything that misses the target in melee will be set up for up to %d counterattacks that are performed at double speed%s')
+			:format(eff.crit, eff.count, crit)
 	end,
 	type = 'physical', subtype = {tactic = true,},
 	status = 'beneficial',
-	parameters = {count = 2, crit = 10, vuln_dur = 2,},
+	parameters = {
+		count = 2, crit_reduction = 10, vuln_dur = 2,
+		vuln_crit = 0,},
 	on_gain = function(self, eff) return nil, "+Guarding" end,
 	on_lose = function(self, eff) return nil, "-Guarding" end,
--- Broken, I believe. Superloaded in Combat:atackTargetWith instead.
---[[
-	callbackOnMeleeMiss = function(self, eff, source, dam)
-		self:setEffect('EFF_GUARD_COUNTERATTACKING', 3, {})
-	end,
---]]
+	-- Superloaded in Combat:atackTargetWith instead.
+	--[[
+		callbackOnMeleeMiss = function(self, eff, source, dam)
+		  self:setEffect('EFF_GUARD_COUNTERATTACKING', 3, {})
+		end,
+	--]]
 	activate = function(self, eff)
 		self:effectTemporaryValue(eff, 'combat_melee_sub_accuracy_defense', 1)
-		self:effectTemporaryValue(eff, 'ignore_direct_crits', eff.crit)
+		self:effectTemporaryValue(eff, 'ignore_direct_crits', eff.crit_reduction)
 	end,}
 
 newEffect {
@@ -174,10 +180,19 @@ newEffect {
 	end,
 	type = 'physical', subtype = {tactic = true,},
 	status = 'detrimental',
-	parameters = {count = 1},
+	parameters = {count = 2, crit = 0,},
 	on_gain = function(self, eff) return nil, '+Vulnerable' end,
 	on_lose = function(self, eff) return nil, '-Vulnerable' end,
+	activate = function(self, eff)
+		eff.crit_id = self:addTemporaryValue('combat_crit_vulnerable', eff.crit)
+	end,
+	deactivate = function(self, eff)
+		self:removeTemporaryValue('combat_crit_vulnerable', eff.crit_id)
+	end,
 	on_merge = function(self, old_eff, new_eff)
+		self:removeTemporaryValue('combat_crit_vulnerable', old_eff.crit_id)
+		new_eff.crit_id = self:addTemporaryValue(
+			'combat_crit_vulnerable', math.max(new_eff.crit, old_eff.crit))
 		table.merge(new_eff.src, old_eff.src)
 		return new_eff
 	end,

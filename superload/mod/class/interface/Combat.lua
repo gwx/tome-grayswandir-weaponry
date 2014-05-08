@@ -345,6 +345,7 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
 		if not hit and guarding then
 			self:setEffect('EFF_GUARD_VULNERABLE', guarding.vuln_dur, {
 											 count = guarding.count,
+											 crit = guarding.vuln_crit,
 											 src = {[target] = true,},})
 		end
   end

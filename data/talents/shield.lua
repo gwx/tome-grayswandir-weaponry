@@ -1,7 +1,12 @@
+local g = require 'grayswandir.utils'
+
 -- Allow to switch to generic shield mastery.
 function Talents.talents_def.T_RIPOSTE:do_generic_option()
 	if config.settings.tome.grayswandir_weaponry_generic_masteries ~= false then
-		Talents.changeTalentType(self, {'technique/combat-training', 1,})
+		local index = g.find(
+			Talents.talents_types_def['technique/combat-training'],
+			Talents:getTalentFromId('T_EXOTIC_WEAPONS_MASTERY'))
+		Talents.changeTalentType(self, {'technique/combat-training', 1,}, index + 1)
 		self.name = 'Shield Mastery'
 		self.require = {
 			stat = {str = function(level) return 14 + level * 6 end,},}
