@@ -141,7 +141,7 @@ local hook = function(self, data)
 			function (value)
 				local talents = require 'engine.interface.ActorTalents'
 				talents.talents_def.T_RIPOSTE:do_generic_option()
-				talents.talents_def.T_REVANCHE:do_generic_option()
+				talents.talents_def.T_GRAYSWANDIR_COUNTER_BASH:do_generic_option()
 			end
 		)
 

@@ -5,7 +5,7 @@ function Talents.talents_def.T_RIPOSTE:do_generic_option()
 		self.name = 'Shield Mastery'
 		self.require = {
 			stat = {str = function(level) return 14 + level * 6 end,},}
-		Talents.changeTalentImage(self, 'talents/shield_expertise.png')
+		Talents.changeTalentImage(self, 'talents/grayswandir_shield_mastery.png')
 	else
 		Talents.changeTalentType(self, {'technique/shield-offense', 2,}, 2)
 		self.name = 'Riposte'
@@ -17,11 +17,11 @@ function Talents.talents_def.T_RIPOSTE:do_generic_option()
 end
 
 newTalent{
-	name = 'Revanche',
+	name = 'Counter Bash',
+	short_name = 'GRAYSWANDIR_COUNTER_BASH',
 	type = {'technique/other', 2},
 	require = {
 		stat = {str = function(level) return 14 + level * 6 end,},},
-	image = 'talents/shield_expertise.png',
 	points = 5,
 	random_ego = 'attack',
 	cooldown = 8,
@@ -95,5 +95,5 @@ newTalent{
 -- Do initial switch if necessary.
 if config.settings.tome.grayswandir_weaponry_generic_masteries ~= false then
 	Talents.talents_def.T_RIPOSTE:do_generic_option()
-	Talents.talents_def.T_REVANCHE:do_generic_option()
+	Talents.talents_def.T_GRAYSWANDIR_COUNTER_BASH:do_generic_option()
 end
