@@ -1,3 +1,4 @@
+local g = require 'grayswandir.utils'
 local GetQuantity = require "engine.dialogs.GetQuantity"
 
 local hook = function(self, data)
@@ -132,6 +133,17 @@ local hook = function(self, data)
       'exotic_rarity', 0, 0, 1000,
       'Exotic Item Rarity',
       'This value is added to the rarity of all the Weapons Pack items, forcing them to generate less often.')
+
+		add_boolean_option(
+			'generic_masteries',
+			'Generic Masteries',
+			'This makes Riposte a generic talent under combat training, and replaces it with a new talent.',
+			function (value)
+				local talents = require 'engine.interface.ActorTalents'
+				talents.talents_def.T_RIPOSTE:do_generic_option()
+				talents.talents_def.T_REVANCHE:do_generic_option()
+			end
+		)
 
     -- Add options for each weapon type.
     local weapontypes = {'swordbreakers', 'rapiers', 'spears', 'whips', 'tridents', 'clubs', {'throwing_knives', 'Throwing Knives'}, 'aurastones',}
