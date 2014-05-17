@@ -7,6 +7,7 @@ newTalent {
 	require = {
 			stat = {dex = function(level) return 14 + level * 6 end,},},
 	mode = 'passive',
+	hide = config.settings.tome.grayswandir_weaponry_bucklers == false,
 	points = 5,
 	duration = function(self, t)
 		return math.ceil(self:combatTalentScale(t, 0.15,  1.15))

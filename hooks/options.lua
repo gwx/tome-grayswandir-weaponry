@@ -147,6 +147,35 @@ local hook = function(self, data)
 			end
 		)
 
+		add_boolean_option(
+			'new_egos',
+			'New Egos',
+			'This enables the new weapon egos.')
+
+		add_boolean_option(
+			'bucklers',
+			'Bucklers',
+			'Allows bucklers to be generated. You must reload the game for this to take effect, and it will not change any already generated zones.',
+			function(value)
+				local talents = require 'engine.interface.ActorTalents'
+				talents.talents_def.T_GRAYSWANDIR_BUCKLER_MASTERY.hide = not value
+				-- Learn
+				if value then
+					if game.player.learn_bucklers then
+						game.player:learnTalentType('technique/buckler-offense', game.player.learn_bucklers[1])
+						game.player.talents_types_mastery['technique/buckler-offense'] =
+							game.player.learn_bucklers[2]
+						game.player.learn_bucklers = nil
+					end
+				else
+					game.player.learn_bucklers = {
+						game.player:knowTalentType('technique/buckler-offense'),
+						game.player.talents_types_mastery['technique/buckler-offense'],}
+					game.player.talents_types['technique/buckler-offense'] = nil
+				end
+			end
+		)
+
     -- Add options for each weapon type.
     local weapontypes = {'swordbreakers', 'rapiers', 'spears', 'whips', 'tridents', 'clubs', {'throwing_knives', 'Throwing Knives'}, 'aurastones',}
     for _, weapontype in pairs(weapontypes) do
@@ -159,7 +188,7 @@ local hook = function(self, data)
       end
       local description = ('Allows %s to be generated. You must reload the game for this to take effect, and it will not change any already generated zones.')
         :format(display_name)
-      add_boolean_option(weapontype, display_name:lower(), description)
+      add_boolean_option(weapontype, display_name, description)
     end
   end
 end
