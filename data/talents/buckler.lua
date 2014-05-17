@@ -1,3 +1,5 @@
+local g = require 'grayswandir.utils'
+
 newTalent {
 	short_name = 'GRAYSWANDIR_BUCKLER_MASTERY',
 	name = 'Buckler Mastery',
@@ -25,6 +27,19 @@ Increases the crit chance of counterattacks by %d%% (scaling with Strength).]])
 				duration, duration > 1 and 's' or '',
 				t.count(self, t),
 				t.crit(self, t))
+	end,
+	do_generic_option = function(self)
+		if config.settings.tome.grayswandir_weaponry_generic_masteries ~= false then
+			local index = g.hasv(
+				Talents.talents_types_def['technique/combat-training'].talents,
+				Talents:getTalentFromId('T_RIPOSTE'))
+			Talents.changeTalentType(self, {'technique/combat-training', 1,}, index + 1)
+			self.require = {
+				stat = {dex = function(level) return 14 + level * 6 end,},}
+		else
+			Talents.changeTalentType(self, {'technique/buckler-offense', 2,}, 2)
+			self.require = Talents.talents_def.T_DISORIENTING_BASH.require
+		end
 	end,}
 
 newTalent {
@@ -83,3 +98,5 @@ local eternal_guard_info = eternal_guard.info
 eternal_guard.info = function(self, t)
 	return eternal_guard_info(self, t):gsub('block', 'block or guard')
 end
+
+Talents.talents_def.T_GRAYSWANDIR_BUCKLER_MASTERY:do_generic_option()

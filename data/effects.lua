@@ -147,7 +147,7 @@ newEffect {
 			crit = (' and have a %d%% higher crit chance.'):format(eff.vuln_crit)
 		end
 		return ('Target uses Accuracy instead of Defense if it is higher and gains %d%% critical chance reduction. Anything that misses the target in melee will be set up for up to %d counterattacks that are performed at double speed%s')
-			:format(eff.crit, eff.count, crit)
+			:format(eff.crit_reduction, eff.count, crit)
 	end,
 	type = 'physical', subtype = {tactic = true,},
 	status = 'beneficial',
@@ -195,5 +195,20 @@ newEffect {
 			'combat_crit_vulnerable', math.max(new_eff.crit, old_eff.crit))
 		table.merge(new_eff.src, old_eff.src)
 		return new_eff
+	end,}
+
+newEffect {
+	name = 'GRAYSWANDIR_DISORIENTED',	image = 'talents/disorienting_bash.png',
+	desc = 'Disoriented',
+	long_desc = function(self, eff)
+		return ('Target is disoriented, lowering defense and physical save by %d and increasing the critical chance of attacks made against them by %d%%.')
+			:format(eff.save, eff.crit)
 	end,
-}
+	type = 'physical', subtype = {sunder = true,},
+	status = 'detrimental',
+	parameters = {save = 10, crit = 10,},
+	activate = function(self, eff)
+		self:effectTemporaryValue(eff, 'combat_crit_vulnerable', eff.crit)
+		self:effectTemporaryValue(eff, 'combat_def', -eff.save)
+		self:effectTemporaryValue(eff, 'combat_physresist', -eff.save)
+	end,}

@@ -313,7 +313,7 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
 		end
 
     -- Do resource strikes.
-    if hit and g.get(weapon, 'resource_strikes') then
+    if final_hit and g.get(weapon, 'resource_strikes') then
 
 			-- Weapon strikes are still buggy, so put some checks in here.
 			local strikes_to_remove = {}
@@ -340,13 +340,27 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
     end
 
 		-- I think callbackOnMeleeMiss is broken, so do buckler stuff here.
+		if not final_hit and target:knowTalent('T_LIGHTNING_BASH') then
+			local cd = target.talents_cd.T_LIGHTNING_BASH
+			if cd then target.talents_cd.T_LIGHTNING_BASH = cd - 1 end
+		end
+
 		-- Give self the vulnerable effect if we miss a guarding opponent.
 		local guarding = target:hasEffect('EFF_GUARDING')
-		if not hit and guarding then
+		if not final_hit and guarding then
 			self:setEffect('EFF_GUARD_VULNERABLE', guarding.vuln_dur, {
 											 count = guarding.count,
 											 crit = guarding.vuln_crit,
 											 src = {[target] = true,},})
+		end
+
+		-- Buckler Focus attack.
+		if final_hit and
+			weapon and weapon.talented == 'buckler' and
+			self:knowTalent('T_BUCKLER_FOCUS')
+		then
+			self:attackTarget(
+				target, damtype, self:callTalent('T_BUCKLER_FOCUS', 'damage'), true)
 		end
   end
 
@@ -545,6 +559,12 @@ function _M:combatGetTraining(weapon)
 	else
 		return self:getTalentFromId(_M.weapon_talents[weapon.talented])
 	end
+end
+
+function _M:getBuckler()
+	if self:attr('disarmed') then return nil, 'disarmed' end
+	local buckler = g.get(self:getInven('OFFHAND'), 1)
+	if buckler.subtype == 'buckler' then return buckler end
 end
 
 local combatDefense = _M.combatDefense

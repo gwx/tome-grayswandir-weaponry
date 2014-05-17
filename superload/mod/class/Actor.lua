@@ -82,8 +82,9 @@ function _M:postUseTalent(ab, ret, silent)
 		-- If we have, then do all the vulnerable stuff.
 		if all_vulnerable then
 			for uid, _ in pairs(self.turn_procs.melee_targets or {}) do
+				local target = __uids[uid]
 				-- Do the countdown.
-				local vulnerable = __uids[uid]:hasEffect('EFF_GUARD_VULNERABLE')
+				local vulnerable = target:hasEffect('EFF_GUARD_VULNERABLE')
 				vulnerable.count = vulnerable.count - 1
 				if vulnerable.count <= 0 then
 					target:removeEffect('EFF_GUARD_VULNERABLE')

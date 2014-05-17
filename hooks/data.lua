@@ -6,5 +6,6 @@ local hook = function(self, data)
   load_data('engine.interface.ActorTalents', 'talents')
   load_data('engine.interface.ActorTemporaryEffects', 'effects')
   load_data('engine.DamageType', 'damage-types')
+	load_data('engine.Birther', 'birth')
 end
 class:bindHook('ToME:load', hook)
