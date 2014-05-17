@@ -548,7 +548,11 @@ function _M:combatGetTraining(weapon)
     for i, tid in ipairs(_M.weapon_talents[weapon.talented]) do
       if self:knowTalent(tid) then
         local t = self:getTalentFromId(tid)
-        local strength = t.getDamage(self, t, weapon)
+				-- Workaround for addons that don't implement getDamage
+				local strength = self:getTalentLevel(t) * 10
+				if t.getDamage then
+					strength = t.getDamage(self, t, weapon)
+				end
         if not max or strength > max then
           max = strength
           ktid = tid
