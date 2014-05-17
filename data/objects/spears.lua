@@ -7,7 +7,7 @@ if config.settings.tome.grayswandir_weaponry_spears ~= false then
     add_name = ' (#COMBAT#)',
     display = '/', color=colors.SLATE,
 		image = 'object/generic_spear.png',
-    --moddable_tile = resolvers.moddable_tile('sword'),
+    moddable_tile = '%s_hand_07',
     encumber = 3,
     rarity = 6,
     metallic = true,
