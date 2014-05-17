@@ -74,7 +74,7 @@ newTalent {
 		return true
 	end,
 	info = function(self, t)
-		return ('Use your buckler to actively deflect incoming attacks. While active, you use your Accuracy instead of Defense if it is higher and gain %d%% critical chance reduction. If someone misses you in melee then you will be in a position to counterattack them - your attack speed is doubled as long as you do nothing but attack such foes.')
+		return ('Use your buckler to actively deflect incoming attacks. While active, you use your Accuracy instead of Defense if it is higher against melee attacks and gain %d%% critical chance reduction. If someone misses you in melee then you will be in a position to counterattack them - your attack speed is doubled against such foes.')
 			:format(t.getCriticalChanceReduction(self, t))
 	end,}
 
