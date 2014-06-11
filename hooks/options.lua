@@ -111,24 +111,6 @@ local hook = function(self, data)
       'Alternate Damage Modifiers',
       'This allows certain weapons to use optional stats for damage modifiers when those stats are higher. For instance, daggers will now use the higher of your strength or cunning for their damage modifiers.')
 
-    add_cycling_option(
-      'alt_reload',
-			{'alternate', 'normal', 'none',},
-      'Reloading',
-      [[This changes several aspects of reloading.
-
-#GOLD#Alternate#LAST#: Moving or waiting will now automatically reload. If you cannot reload your main quiver, your offset quiver will be reloaded instead. The reload talent is now instant use, costs 10 stamina, and refills your ammo directly instead of giving the reload buff.
-
-#GOLD#Normal#LAST#: Reloading works as it always has.
-
-#GOLD#None#LAST#: You never need to reload.]],
-			function (value)
-				local talents = require 'engine.interface.ActorTalents'
-				local talent = talents.talents_def.T_RELOAD
-				if talent then talent.no_energy = (value == 'alternate') end
-			end
-		)
-
     add_numeric_option(
       'exotic_rarity', 0, 0, 1000,
       'Exotic Item Rarity',

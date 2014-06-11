@@ -568,7 +568,7 @@ end
 function _M:getBuckler()
 	if self:attr('disarmed') then return nil, 'disarmed' end
 	local buckler = g.get(self:getInven('OFFHAND'), 1)
-	if buckler.subtype == 'buckler' then return buckler end
+	if buckler and buckler.subtype == 'buckler' then return buckler end
 end
 
 local combatDefense = _M.combatDefense

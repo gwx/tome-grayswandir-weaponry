@@ -110,18 +110,12 @@ function _M:postUseTalent(ab, ret, silent)
   return unpack(ret)
 end
 
--- Add reloading to energy use.
-local useEnergy = _M.useEnergy
-function _M:useEnergy(val)
-  useEnergy(self, val)
-  if not self.__talent_running and
-    not self.__talent_running_post
-  then
-		local conf = config.settings.tome.grayswandir_weaponry_alt_reload
-    if conf == 'alternate' then
-      if self.reload then self:reload() end
-    end
-  end
+local waitTurn = _M.waitTurn
+function _M:waitTurn()
+	local reloadQS = self.reloadQS
+	self.reloadQS = nil
+	waitTurn()
+	self.reloadQS = reloadQS
 end
 
 -- Allow pools to be learned for any attribute, not just talents.

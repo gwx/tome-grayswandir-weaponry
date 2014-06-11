@@ -12,8 +12,11 @@ adds = {
 for store, weapons in pairs(adds) do
   if _G.type(weapons) ~= 'table' then weapons = {weapons} end
   store = loading_list[store].store
+	local as_function = false
+	-- Convert from function to table.
   if _G.type(store.filters) == 'function' then
     store.filters = {store.filters()}
+		as_function = true
   end
   -- Add each weapon subtype to the filters.
   for _, subtype in pairs(weapons) do
@@ -22,6 +25,11 @@ for store, weapons in pairs(adds) do
     -- Increase the number of items to make up for the variety.
     store.nb_fill = (store.nb_fill or 10) + 5
   end
+	-- Convert back from table to function.
+	if as_function then
+		local filters = store.filters
+		store.filters = function() return filters end
+	end
 end
 
 store = loading_list.ANGOLWEN_STAFF_WAND.store

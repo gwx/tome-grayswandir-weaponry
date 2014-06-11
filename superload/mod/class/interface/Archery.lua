@@ -5,13 +5,6 @@ local talents = require 'engine.interface.ActorTalents'
 -- Get the current reload rate.
 function _M:reloadRate(ammo)
   local kind = ammo.archery_ammo
-  if config.settings.tome.grayswandir_weaponry_alt_reload == 'normal' and
-    (kind == 'bow' or kind == 'sling' or not kind)
-  then
-    local t = talents.talents_def.T_RELOAD
-    return t.shots_per_turn(self, t)
-  end
-
   local mastery
   if not self.ammo_mastery_reload then
     mastery = 0
@@ -101,9 +94,7 @@ function _M:getArcheryWeapons()
       if weapon.archery_kind ~= ammo.archery_ammo then goto invalid_weapon end
 
       local shots = combat and combat.shots_left
-      if not ammo.infinite and
-				(not shots or shots <= 0) and
-				config.settings.tome.grayswandir_weaponry_alt_reload ~= 'none'
+      if not ammo.infinite and (not shots or shots <= 0)
 			then goto invalid_weapon end
 
       if combat.use_resource then
@@ -224,8 +215,7 @@ function _M:archeryAcquireTargetsWith(weapon, ammo, x, y, tg, params)
   local infinite =
 		ammo.infinite or
 		self:attr('infinite_ammo') or
-		params.infinite or
-		config.settings.tome.grayswandir_weaponry_alt_reload == 'none'
+		params.infinite
 
   local targets = {}
   local grab_target = function(x, y)

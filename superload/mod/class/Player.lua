@@ -4,8 +4,7 @@ local _M = loadPrevious(...)
 local restCheck = _M.restCheck
 function _M:restCheck()
 	local check, reason = restCheck(self)
-  if config.settings.tome.grayswandir_weaponry_alt_reload ~= 'alternate' and
-		reason == "all resources and life at maximum" and
+  if reason == "all resources and life at maximum" and
 		self:needReload()
 	then return true end
   return check, reason
