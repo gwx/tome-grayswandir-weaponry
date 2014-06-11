@@ -72,6 +72,22 @@ _M.shoot_offhand_slots = {OFFHAND = true}
 _M.shoot_psi_slots = {PSIONIC_FOCUS = true}
 
 function _M:getArcheryWeapons()
+	-- Check for archery weapon override.
+	if self.archery_weapon_override then
+		if not self.archery_weapon_override.ignore_disarm and self:attr('disarmed') then
+			return {}, 'disarmed'
+		end
+
+		if self.archery_weapon_override.direct then
+			return self.archery_weapon_override
+		else
+			return {{weapon = self.archery_weapon_override[1],
+							 ammo = self.archery_weapon_override[2],
+							 offhand = false,
+							 use_psi_archery = false,}}
+		end
+	end
+
   if self:attr('disarmed') then return {}, 'disarmed' end
 
   -- Get the default ammo slot.
@@ -279,7 +295,7 @@ function _M:archeryShoot(targets, talent, tg, params)
 
   for _, data in ipairs(targets) do
     local weapon, ammo = data.weapon, data.ammo
-    local wcombat, acombat = weapon.combat, ammo.combat
+    local wcombat, acombat = weapon.combat, data.acombat or ammo.combat
     local tg = table.clone(base_tg)
     tg.type = tg.type or wcombat.tg_type or acombat.tg_type
     tg.display = tg.display or self:archeryDefaultProjectileVisual(weapon, ammo)

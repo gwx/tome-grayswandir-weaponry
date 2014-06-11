@@ -114,7 +114,7 @@ local waitTurn = _M.waitTurn
 function _M:waitTurn()
 	local reloadQS = self.reloadQS
 	self.reloadQS = nil
-	waitTurn()
+	waitTurn(self)
 	self.reloadQS = reloadQS
 end
 
