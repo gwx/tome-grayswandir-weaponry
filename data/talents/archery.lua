@@ -36,10 +36,10 @@ end
 
 -- Masteries
 local masteries = {
-  BOW_MASTERY = {reload = 0.5, info = 'full'},
-  SLING_MASTERY = {reload = 0.5, info = 'full'},
-	SKIRMISHER_SLING_SUPREMACY = {reload = 0.5, info = 'full'},
-  KNIFE_MASTERY = {reload = 0.35, info = 'reload'},}
+  BOW_MASTERY = {name = 'bow', type = 'bow', reload = 0.5, info = 'full'},
+  SLING_MASTERY = {name = 'sling', type = 'sling', reload = 0.5, info = 'full'},
+	SKIRMISHER_SLING_SUPREMACY = {name = 'sling', type = 'sling', reload = 0.5, info = 'full'},
+  KNIFE_MASTERY = {name = 'dagger', type = 'knife', reload = 0.35, info = 'reload'},}
 for mastery, params in pairs(masteries) do
   t = Talents.talents_def['T_'..mastery]
   t.ammo_mastery_reload = function(self, t)
@@ -47,7 +47,7 @@ for mastery, params in pairs(masteries) do
   end
   t.passives = function(self, t, p)
     self:talentTemporaryValue(
-      p, 'ammo_mastery_reload', {[mastery] = t.ammo_mastery_reload(self, t)})
+      p, 'ammo_mastery_reload', {[params.type] = t.ammo_mastery_reload(self, t)})
   end
   local old_info = t.info
   if params.info == 'full' then
@@ -57,7 +57,7 @@ Increases your reload rate with associated ammos by %d.]])
         :format(
           t.getDamage(self, t),
           t.getPercentInc(self, t) * 100,
-          mastery,
+          params.name,
           t.ammo_mastery_reload(self, t))
     end
   elseif params.info == 'reload' then
