@@ -28,7 +28,7 @@ for store, weapons in pairs(adds) do
 	-- Convert back from table to function.
 	if as_function then
 		local filters = store.filters
-		store.filters = function() return filters end
+		store.filters = function() return unpack(filters) end
 	end
 end
 
