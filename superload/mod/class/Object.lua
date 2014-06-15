@@ -24,7 +24,7 @@ function _M:descAccuracyBonus(desc, weapon, use_actor)
   end
   strength = use_actor:getAccuracyEffectStrength(weapon, 'staff')
 	if strength then
-		desc:add("Accuracy bonus: ", {"color","LIGHT_GREEN"}, showpct(4, m * strength), {"color","LAST"}, " procs dam / acc", true)
+		desc:add("Accuracy bonus: ", {"color","LIGHT_GREEN"}, showpct(2.5, m * strength), {"color","LAST"}, " procs dam / acc", true)
   end
   strength = use_actor:getAccuracyEffectStrength(weapon, 'knife')
 	if strength then
