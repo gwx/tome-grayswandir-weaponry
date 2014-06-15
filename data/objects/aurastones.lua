@@ -52,6 +52,7 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
           {cost = {mana = 1,},
            talented = 'aurastone', accuracy_effect = 'staff',
            dam = 1,
+					 physcrit = -50,
            dammod = {mag = 0.1,},},},},},}
 
   newEntity{
@@ -70,6 +71,7 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
           {cost = {mana = 1.5,},
            talented = 'aurastone', accuracy_effect = 'staff',
            dam = 2,
+					 physcrit = -45,
            dammod = {mag = 0.15,},},},},},}
 
   newEntity{
@@ -88,6 +90,7 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
           {cost = {mana = 2,},
            talented = 'aurastone', accuracy_effect = 'staff',
            dam = 3,
+					 physcrit = -40,
            dammod = {mag = 0.2,},},},},},}
 
   newEntity{
@@ -106,6 +109,7 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
           {cost = {mana = 2.5,},
            talented = 'aurastone', accuracy_effect = 'staff',
            dam = 4,
+					 physcrit = -35,
            dammod = {mag = 0.25,},},},},},}
 
   newEntity{
@@ -124,6 +128,7 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
           {cost = {mana = 3,},
            talented = 'aurastone', accuracy_effect = 'staff',
            dam = 5,
+					 physcrit = -30,
            dammod = {mag = 0.3,},},},},},}
 
 end
