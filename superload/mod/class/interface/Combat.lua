@@ -6,12 +6,15 @@ _M:addCombatTraining('spear', 'T_EXOTIC_WEAPONS_MASTERY')
 _M:addCombatTraining('aurastone', 'T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY')
 _M:addCombatTraining('staff', 'T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY')
 
--- Add combat training to midnight's sceptres.
+-- Add combat training to midnight's weapons.
 _M:addCombatTraining('sceptre', 'T_WEAPONS_MASTERY')
 _M:addCombatTraining('sceptre', 'T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY')
+_M:addCombatTraining('ritual-blade', 'T_KNIFE_MASTERY')
+_M:addCombatTraining('ritual-blade', 'T_GRAYSWANDIR_MAGIC_WEAPONS_MASTERY')
 
 if 'Awesome' == config.settings.tome.nulltweaks_mastery then
   _M:addCombatTraining('sceptre', 'T_EXOTIC_WEAPONS_MASTERY') -- nulltweaks greatweapon
+	_M:addCombatTraining('ritual-blade', 'T_WEAPONS_MASTERY')
   _M:addCombatTraining('spear', 'T_WEAPONS_MASTERY')
 end
 

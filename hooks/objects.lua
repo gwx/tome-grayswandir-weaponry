@@ -46,12 +46,15 @@ local hook = function(self, data, force)
 
   end
 
-  -- Midnight hacking.
+  -- HousePet hacking.
   if data.file == '/data-midnight/sceptres.lua' then
     load_objects('alt-sceptres', true)
   end
   if data.file == '/data-midnight/world-artifacts-far-east.lua' then
     load_objects('alt-sceptres', true)
+  end
+  if data.file == '/data-arcanum/ritual_blade.lua' then
+    load_objects('alt-ritual-blades', true)
   end
 
 end
