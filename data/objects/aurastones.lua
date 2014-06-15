@@ -34,8 +34,7 @@ if config.settings.tome.grayswandir_weaponry_aurastones ~= false then
     end,
     desc = [[A small stone that exudes a faint magical aura. Those who are trained can channel magic through them while they are clenched in their fists, striking out with magical energies on every punch.]],
     --randart_able = '/data/general/objects/random-artifacts/melee.lua',
-    egos = '/data-grayswandir-weaponry/egos/aurastones.lua',
-    egos_chance = {prefix = 100, suffix = resolvers.mbonus(40, 5),},}
+    addons = '/data-grayswandir-weaponry/addons/aurastones.lua',}
 
   newEntity{
     base = 'BASE_AURASTONE',

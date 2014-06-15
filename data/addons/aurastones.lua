@@ -19,7 +19,7 @@ for _, d in pairs(defs) do
 
   newEntity {
     power_source = {arcane = true,},
-    name = d[2]..' ', prefix = true, instant_resolve = true,
+    name = d[2]..' ', prefix = true, addon = true, instant_resolve = true,
     keywords = {[d[2]] = true,},
     level_range = {1, 50,},
     rarity = 8,
@@ -32,7 +32,7 @@ for _, d in pairs(defs) do
 
   newEntity {
     power_source = {arcane = true,},
-    name = d[3]..' ', prefix = true, instant_resolve = true,
+    name = d[3]..' ', prefix = true, addon = true, instant_resolve = true,
     keywords = {[d[3]] = true,},
     level_range = {1, 50,},
     rarity = 11,
