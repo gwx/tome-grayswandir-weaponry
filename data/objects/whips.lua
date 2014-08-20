@@ -17,7 +17,7 @@ if config.settings.tome.grayswandir_weaponry_whips ~= false then
     cost = 10,
     material_level = 1,
     combat = {
-      dam = resolvers.rngavg(4,6),
+      dam = resolvers.rngavg(8,12),
       apr = 0,
       physcrit = 3,
       dammod = {dex=1},
@@ -32,7 +32,7 @@ if config.settings.tome.grayswandir_weaponry_whips ~= false then
     cost = 20,
     material_level = 2,
     combat = {
-      dam = resolvers.rngavg(8,12),
+      dam = resolvers.rngavg(11,17),
       apr = 1,
       physcrit = 4,
       dammod = {dex=1},

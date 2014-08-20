@@ -67,7 +67,7 @@ function _M:reload()
 end
 
 -- Changing around the actual shooting.
-_M.shoot_order = {'MAINHAND', 'OFFHAND', 'PSIONIC_FOCUS', 'QUIVER',}
+_M.shoot_order = {'MAINHAND', 'OFFHAND', 'PSIONIC_FOCUS', 'QUIVER', 'TOOL'}
 _M.shoot_offhand_slots = {OFFHAND = true}
 _M.shoot_psi_slots = {PSIONIC_FOCUS = true}
 
@@ -94,36 +94,53 @@ function _M:getArcheryWeapons()
   local ammo = self:getInven('QUIVER')
   if ammo then ammo = ammo[1] end
 
+	local cd
   local weapons = {}
   for _, inven in ipairs(_M.shoot_order) do
     local list = self:getInven(inven) or {}
     local offhand = _M.shoot_offhand_slots[inven]
     local psi = _M.shoot_psi_slots[inven]
 
+		local single = self.inven_def[inven].single_archery
+
     for _, weapon in ipairs(list) do
-      if not weapon or not weapon.archery_kind then goto invalid_weapon end
+			if not single or #weapons == 0 then
+				if not weapon or not weapon.archery_kind then goto invalid_weapon end
 
-      local ammo = ammo
-      if weapon.is_own_ammo then ammo = weapon end
-      if not ammo then goto invalid_weapon end
-      local combat = ammo.combat
-      if weapon.archery_kind ~= ammo.archery_ammo then goto invalid_weapon end
+				local ammo = ammo
+				if weapon.is_own_ammo then ammo = weapon end
+				if not ammo then goto invalid_weapon end
+				local combat = ammo.combat
+				if weapon.archery_kind ~= ammo.archery_ammo then goto invalid_weapon end
 
-      local shots = combat and combat.shots_left
-      if not ammo.infinite and (not shots or shots <= 0)
-			then goto invalid_weapon end
+				if weapon.slot_talent_cooldown then
+					local cooldown = self:isTalentCoolingDown(weapon.slot_talent_cooldown)
+					if cooldown then
+						if not cd or cd > cooldown then cd = cooldown end
+						goto invalid_weapon
+					end
+				end
 
-      if combat.use_resource then
-        local resource = self['get'..wcombat.use_resource.kind:capitalize()](self)
-        if resource < wcombat.use_resource.value then goto invalid_weapon end
-      end
+				local shots = combat and combat.shots_left
+				if not ammo.infinite and (not shots or shots <= 0)
+				then goto invalid_weapon end
 
-      table.insert(weapons, {weapon = weapon, ammo = ammo,
-                             offhand = offhand, use_psi_archery = psi})
+				if combat.use_resource then
+					local resource = self['get'..wcombat.use_resource.kind:capitalize()](self)
+					if resource < wcombat.use_resource.value then goto invalid_weapon end
+				end
+
+				table.insert(weapons, {weapon = weapon, ammo = ammo,
+															 offhand = offhand, use_psi_archery = psi})
+			end
 
       ::invalid_weapon::
     end
   end
+
+	if cd then
+		self.talents_cd.T_SHOOT = cd
+	end
 
   return weapons
 end

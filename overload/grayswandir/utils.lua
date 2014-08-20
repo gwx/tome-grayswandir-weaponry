@@ -1,4 +1,4 @@
-module('grayswandir', package.seeall)
+module('grayswandir.utils', package.seeall)
 
 --[=[
   Decends recursively through a table by the given list of keys.

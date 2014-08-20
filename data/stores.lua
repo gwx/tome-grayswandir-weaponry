@@ -32,6 +32,16 @@ for store, weapons in pairs(adds) do
 	end
 end
 
+store = loading_list.GEMSTORE.store
+store.nb_fill = (store.nb_fill or 10) + 30
+table.insert(store.filters, {type = 'tool', id = true, tome_drops = 'store',})
+table.insert(store.filters, {type = 'charm', id = true, tome_drops = 'store',})
+table.insert(store.filters, {type = 'lite', id = true, tome_drops = 'store',})
+
+store = loading_list.LIGHT_ARMOR.store
+store.nb_fill = (store.nb_fill or 10) + 5
+table.insert(store.filters, {type = 'armor', subtype = 'buckler', id = true, tome_drops = 'store',})
+
 store = loading_list.ANGOLWEN_STAFF_WAND.store
 store.nb_fill = 30
 store.filters = {
@@ -48,3 +58,4 @@ adds = {'rapier', 'club', 'greatclub', 'swordbreaker', 'whip', 'trident', 'spear
 for i, subtype in pairs(adds) do
   table.insert(filters, {type = 'weapon', subtype = subtype, id = true, tome_drops = 'boss'})
 end
+table.insert(filters, {type = 'armor', subtype = 'buckler', id = true, tome_drops = 'boss'})

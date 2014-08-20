@@ -197,8 +197,8 @@ end
 
 local attackTarget = _M.attackTarget
 function _M:attackTarget(target, damtype, mult, noenergy, force_unharmed)
-	local uid = g.get(target, 'uid')
-	if uid then g.set(self.turn_procs, 'melee_targets', uid, true) end
+	-- Mark this target as having been hit.
+	g.set(self.turn_procs, 'melee_targets', target, true)
 
 	local ret = {attackTarget(self, target, damtype, mult, noenergy, force_unharmed)}
 
@@ -207,17 +207,17 @@ function _M:attackTarget(target, damtype, mult, noenergy, force_unharmed)
 	if self.did_energy then
 		-- First check if we only hit vulnerable targets.
 		local all_vulnerable = true
-		for uid, _ in pairs(self.turn_procs.melee_targets or {}) do
-			local vulnerable = __uids[uid]:hasEffect('EFF_GUARD_VULNERABLE')
+		for target, _ in pairs(self.turn_procs.melee_targets or {}) do
+			local vulnerable = target.hasEffect and target:hasEffect('EFF_GUARD_VULNERABLE')
 			if not g.get(vulnerable, 'src', self) then
 				all_vulnerable = false
 			end
 		end
 		-- If we have, then do all the vulnerable stuff.
 		if all_vulnerable then
-			for uid, _ in pairs(self.turn_procs.melee_targets or {}) do
+			for target, _ in pairs(self.turn_procs.melee_targets or {}) do
 				-- Do the countdown.
-				local vulnerable = __uids[uid]:hasEffect('EFF_GUARD_VULNERABLE')
+				local vulnerable = target.hasEffect and target:hasEffect('EFF_GUARD_VULNERABLE')
 				vulnerable.count = vulnerable.count - 1
 				if vulnerable.count <= 0 then
 					target:removeEffect('EFF_GUARD_VULNERABLE')
@@ -235,8 +235,7 @@ local attackTargetWith = _M.attackTargetWith
 function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
 	local final_speed, final_hit, all_hits = nil, nil, {}
 
-	local uid = g.get(target, 'uid')
-	if uid then g.set(self.turn_procs, 'melee_targets', uid, true) end
+	g.set(self.turn_procs, 'melee_targets', target, true)
 
 	-- Expand this into a full sweep attack.
 	if self:combatCanSweep(weapon, target) and target then
@@ -299,7 +298,7 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
   -- Try to do a normal attack.
   if not final_speed and self:combatCanMelee(weapon, target) then
 
-		local vulnerable = target:hasEffect('EFF_GUARD_VULNERABLE')
+		local vulnerable = target.hasEffect and target:hasEffect('EFF_GUARD_VULNERABLE')
 		-- Gimmick speed if we're hitting a vulnerable target.
 		local vulnerable_mod
 		if g.get(vulnerable, 'src', self) then
@@ -349,7 +348,7 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
 		end
 
 		-- Give self the vulnerable effect if we miss a guarding opponent.
-		local guarding = target:hasEffect('EFF_GUARDING')
+		local guarding = target.hasEffect and target:hasEffect('EFF_GUARDING')
 		if not final_hit and guarding then
 			self:setEffect('EFF_GUARD_VULNERABLE', guarding.vuln_dur, {
 											 count = guarding.count,
@@ -588,6 +587,90 @@ local combatSpeed = _M.combatSpeed
 function _M:combatSpeed(weapon)
 	local mult = self.combat_physspeed_multiplier or 1
 	return combatSpeed(self, weapon) / mult
+end
+
+-- Generic Scaling Function
+--
+-- Takes a table with the following arguments. Any or all may be missing.
+--
+-- low: The value to return when at an effective score of 0.
+-- high: The value to return when at an effective score of 100.
+-- limit: If present, influences the value returned when effective score is
+--   over 100. The result will get close to but never reach this value.
+-- synergy: How much the different inputs affect each other. At 0, the
+--   different components will just be added together for the final score.
+--   At 1, they will be multiplied, so if any input is 0 the low value will
+--   be the result. Defaults to 0.5.
+-- curve: How to curve the result. Result will be raised to this power, making
+--   the initial points worth more or less than the later ones.
+--   Defaults to 0.75.
+-- after: An effect to apply after the result is computed:
+--   floor: Round down to the nearest integer.
+--   ceil: Round up to the nearest integer.
+--   damage: Apply the general scaling for damage values.
+--
+-- Actual power inputs are on the numbered indices. They are expected to be a
+-- value from 0 to 100. There are also several shortcuts:
+--
+-- talent id or table: Scale from 0% at talent level 1 to 100% at
+--   talent level 5.
+-- 3 letter stat id, eg. 'str': Scale with the stat value.
+-- 'atk': Scale with accuracy.
+-- 'phys': Scale with physical power.
+-- 'mind': Scale with mind power.
+-- 'spell': Scale with spell power.
+function _M:scale(t)
+	if #t == 0 then return t.high or 1 end
+
+	local synergy_score = 100
+	local asynergy_score = 0
+
+	for _, x in ipairs(t) do
+		local score = x
+
+		if type(x) == 'table' then x = x.id end
+
+ 		if type(x) == 'string' and x:sub(1, 2) == 'T_' then score = (self:getTalentLevel(x) - 1) * 25
+		elseif x == 'str' then score = self:getStr()
+		elseif x == 'dex' then score = self:getDex()
+		elseif x == 'con' then score = self:getCon()
+		elseif x == 'mag' then score = self:getMag()
+		elseif x == 'wil' then score = self:getWil()
+		elseif x == 'cun' then score = self:getCun()
+		elseif x == 'atk' then score = self:combatAttack()
+		elseif x == 'phys' then score = self:combatPhysicalpower()
+		elseif x == 'mind' then score = self:combatMindpower()
+		elseif x == 'spell' then score = self:combatSpellpower()
+		end
+
+		synergy_score = synergy_score * math.max(0, score) * 0.01
+		asynergy_score = asynergy_score + score
+	end
+	asynergy_score = asynergy_score / #t
+
+	local synergy = t.synergy or 0.5
+	local score = synergy_score * synergy + asynergy_score * (1 - synergy)
+
+	local result
+	local low = t.low or 0
+	local high = t.high or (t.limit and (t.limit - low) * 0.5 + low) or low + 1
+	local curve = t.curve or 0.75
+	if score <= 100 or not t.limit then
+		local diff = high - low
+		result = low + diff * (score * 0.01) ^ curve
+	else
+		local diff = t.limit - high
+		curve = (t.limit_curve or curve) * 100
+		score = score - 100
+		result = high + diff * score / (score + curve)
+	end
+
+	if t.after == 'floor' then result = math.floor(result)
+	elseif t.after == 'ceil' then result = math.ceil(result)
+	elseif t.after == 'damage' then result = self:rescaleDamage(result)
+	end
+
+	return result
 end
 
 return _M

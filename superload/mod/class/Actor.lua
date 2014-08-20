@@ -73,16 +73,15 @@ function _M:postUseTalent(ab, ret, silent)
 	if not util.getval(ab.no_energy, self, ab) then
 		-- First check if we only hit vulnerable targets.
 		local all_vulnerable = true
-		for uid, _ in pairs(self.turn_procs.melee_targets or {}) do
-			local vulnerable = __uids[uid]:hasEffect('EFF_GUARD_VULNERABLE')
+		for target, _ in pairs(self.turn_procs.melee_targets or {}) do
+			local vulnerable = target.hasEffect and target:hasEffect('EFF_GUARD_VULNERABLE')
 			if not g.get(vulnerable, 'src', self) then
 				all_vulnerable = false
 			end
 		end
 		-- If we have, then do all the vulnerable stuff.
 		if all_vulnerable then
-			for uid, _ in pairs(self.turn_procs.melee_targets or {}) do
-				local target = __uids[uid]
+			for target, _ in pairs(self.turn_procs.melee_targets or {}) do
 				-- Do the countdown.
 				local vulnerable = target:hasEffect('EFF_GUARD_VULNERABLE')
 				vulnerable.count = vulnerable.count - 1
@@ -163,6 +162,53 @@ end
 
 function _M:isTalentRevealed(talent_id)
   return g.get(self, '__show_special_talents', talent_id)
+end
+
+local wearObject = _M.wearObject
+function _M:wearObject(o, replace, vocal)
+
+	local slots = {o:wornInven()}
+	local offslot = self:getObjectOffslot(o)
+	if offslot then table.insert(slots, offslot) end
+
+	if #slots == 0 then
+		if vocal then game.logSeen(self, '%s is not wearable.', o:getName{do_color = true,}) end
+		return false
+	end
+
+	local do_replace = false
+	for i = 1, replace and 2 or 1 do
+		for _, slot in pairs(slots) do
+			local inven = self:getInven(slot)
+			if inven and (#inven < inven.max or replace) and
+				self:canWearObject(o, inven.name) and
+				not o:check('on_canwear', self, slot)
+			then
+				if self:addObject(inven, o) then
+					if vocal then
+						game.logSeen(self, '%s wears: %s.', self.name:capitalize(), o:getName{do_color=true})
+					end
+					return true
+				elseif do_replace then
+					local ro = self:removeObject(inven, 1, true)
+					if vocal then
+						game.logSeen(self, '%s wears(replacing): %s.', self.name:capitalize(), o:getName{do_color=true})
+					end
+					-- Can we stack the old and new one ?
+					if o:stack(ro) then ro = true end
+					-- Warning: assume there is now space
+					self:addObject(inven, o)
+					return ro
+				end
+			end
+		end
+		do_replace = true
+	end
+
+	if vocal then
+		game.logSeen(self, '%s can not wear: %s.', self.name:capitalize(), o:getName{do_color=true})
+	end
+	return false
 end
 
 return _M

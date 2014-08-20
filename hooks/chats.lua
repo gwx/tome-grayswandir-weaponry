@@ -75,6 +75,10 @@ if config.settings.tome.grayswandir_weaponry_throwing_knives ~= false then
   table.insert(chat.last_hope_merchant.weapons, 'voratun throwing knives')
 end
 
+if config.settings.tome.grayswandir_weaponry_bucklers ~= false then
+  table.insert(chat.last_hope_merchant.armours, 'voratun buckler')
+end
+
 local maker_list = function(chat)
 	local mainbases = {
     armours = chat.last_hope_merchant.armours,
@@ -96,8 +100,8 @@ local maker_list = function(chat)
 				if player:attr('forbid_arcane') then -- no magic gear for antimatic characters
 					not_ps = {arcane=true}
 					force_themes = {'antimagic'}
-				else -- no antimagic gear for characters with arcane-powered classes
-					if player:attr('has_arcane_knowledge') then not_ps = {antimagic=true} end
+				else -- no antimagic gear for characters with arcane-powered classes or undeads
+					if player:attr("has_arcane_knowledge") or player:attr("undead") then not_ps = {antimagic=true} end
 				end
 
 				local o, ok

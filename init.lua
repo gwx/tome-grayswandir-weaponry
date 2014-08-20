@@ -1,7 +1,7 @@
 long_name = 'Weapons Pack'
 short_name = 'grayswandir-weaponry'
 for_module = 'tome'
-version = {1,2,2}
+version = {1,2,3}
 weight = 80
 author = {'grayswandir'}
 homepage = ''
@@ -19,10 +19,7 @@ description = [[This adds new weapon types and egos to the game.
 - Mindslayers can now equip ranged weapons in their psionic focus slot.
 - Aurastones are magic-based items that can be equipped to modify your unarmed attacks.
 - For archery, you can switch between old style reloading, instant style reloading, or completely ignore ammo altogether.
-- Magic Weapon Mastery applies to staves, aurastones, ritual knives, and sceptres, and can be learned in Angolwen.
-
-Incompatible Addons: Archery Tweaks, No Reload.
-This should let you do everything those addons do.]]
+- Magic Weapon Mastery applies to staves, aurastones, ritual knives, and sceptres, and can be learned in Angolwen.]]
 tags = {'weapon', 'whip', 'trident', 'melee', 'rapier', 'swordbreaker', 'spear', 'club', 'throw', 'psi', 'aurastone', 'aura', 'stone', 'magic', 'buckler',}
 
 overload = true

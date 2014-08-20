@@ -1,4 +1,5 @@
 local g = require 'grayswandir.utils'
+local get = util.getval
 
 -- Allow to switch to generic shield mastery.
 function Talents.talents_def.T_RIPOSTE:do_generic_option()
@@ -45,6 +46,11 @@ newTalent{
 				game.logPlayer(self, "You require a weapon and a shield to use this talent.")
 			end
 			return false
+		elseif #get(t.valid_targets, self, t) == 0 then
+			if not silent then
+				game.logPlayer(self, "You require an adjacent actor with the counterstrike debuff to use this talent.")
+			end
+			return false
 		end
 		return true
 	end,
@@ -55,6 +61,20 @@ newTalent{
 						range = self:getTalentRange(t),
 						selffire = false,
 						radius = self:getTalentRadius(t),}
+	end,
+	valid_targets = function(self, t)
+		local tg = self:getTalentTarget(t)
+		local targets = {}
+		self:project(tg, self.x, self.y, function(px, py, tg, self)
+			local target = game.level.map(px, py, Map.ACTOR)
+			if target and
+				target:hasEffect('EFF_COUNTERSTRIKE') and
+				self:reactionToward(target) < 0
+			then
+				table.insert(targets, target)
+			end
+		end)
+		return targets
 	end,
 	damage_multiplier = function(self, t)
 		return self:combatTalentWeaponDamage(t, 1.2, 2.5, self:getTalentLevel('T_SHIELD_EXPERTISE'))

@@ -28,7 +28,7 @@ if config.settings.tome.grayswandir_weaponry_clubs ~= false then
     cost = 5,
     material_level = 1,
     combat = {
-      dam = resolvers.rngavg(10,16),
+      dam = resolvers.rngavg(15,21),
       apr = 1,
       physcrit = 0.5,
       dammod = {str=1.2},
@@ -43,7 +43,7 @@ if config.settings.tome.grayswandir_weaponry_clubs ~= false then
     cost = 10,
     material_level = 2,
     combat = {
-      dam = resolvers.rngavg(22,30),
+      dam = resolvers.rngavg(24,32),
       apr = 2,
       physcrit = 1,
       dammod = {str=1.2},

@@ -26,7 +26,7 @@ if config.settings.tome.grayswandir_weaponry_spears ~= false then
     cost = 5,
     material_level = 1,
     combat = {
-      dam = resolvers.rngavg(5,8),
+      dam = resolvers.rngavg(10,13),
       apr = 4,
       physcrit = 2.5,
       dammod = {str=1},
@@ -41,7 +41,7 @@ if config.settings.tome.grayswandir_weaponry_spears ~= false then
     cost = 10,
     material_level = 2,
     combat = {
-      dam = resolvers.rngavg(10,16),
+      dam = resolvers.rngavg(12,18),
       apr = 5,
       physcrit = 3,
       dammod = {str=1},

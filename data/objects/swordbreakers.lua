@@ -30,7 +30,7 @@ if config.settings.tome.grayswandir_weaponry_swordbreakers ~= false then
       dual_deflect = {
         chance = resolvers.rngavg(1, 2),
         dam = resolvers.rngavg(8, 10),},
-      dam = resolvers.rngavg(3,4),
+      dam = resolvers.rngavg(5,8),
       apr = 2,
       physcrit = 0.5,
       dammod = {dex = 0.4, str = 0.4,},
@@ -50,7 +50,7 @@ if config.settings.tome.grayswandir_weaponry_swordbreakers ~= false then
       dual_deflect = {
         chance = resolvers.rngavg(3, 4),
         dam = resolvers.rngavg(16, 20),},
-      dam = resolvers.rngavg(5,8),
+      dam = resolvers.rngavg(8,12),
       apr = 3,
       physcrit = 1,
       dammod = {dex = 0.4, str = 0.4,},

@@ -28,7 +28,7 @@ if config.settings.tome.grayswandir_weaponry_rapiers ~= false then
     cost = 5,
     material_level = 1,
     combat = {
-      dam = resolvers.rngavg(5,7),
+      dam = resolvers.rngavg(10,12),
       apr = 2,
       physcrit = 4,
       dammod = {str = 0.4, dex = 0.4, cun = 0.4},
@@ -44,7 +44,7 @@ if config.settings.tome.grayswandir_weaponry_rapiers ~= false then
     cost = 10,
     material_level = 2,
     combat = {
-      dam = resolvers.rngavg(10,15),
+      dam = resolvers.rngavg(12,17),
       apr = 3,
       physcrit = 5,
       dammod = {str = 0.4, dex = 0.4, cun = 0.4},
