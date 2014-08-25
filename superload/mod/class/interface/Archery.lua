@@ -267,7 +267,6 @@ function _M:archeryAcquireTargetsWith(weapon, ammo, x, y, tg, params)
       limit_shots = limit_shots - 1
     end
 
-
     -- Consume ammo.
     if not infinite then
       if acombat.shots_left > 0 then
@@ -296,7 +295,11 @@ function _M:archeryAcquireTargetsWith(weapon, ammo, x, y, tg, params)
 
   local limit_shots = params.limit_shots
   for i = 1, params.multishots or 1 do
-    self:project(tg, x, y, grab_target)
+		if params.one_shot then
+			self:project({type = 'hit'}, x, y, grab_target)
+		else
+			self:project(tg, x, y, grab_target)
+		end
   end
 
   if #targets > 0 then return targets end
