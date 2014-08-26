@@ -1,3 +1,5 @@
 * Changes
 ** Current
 - Counter Bash checks for valid targets in pre use phase.
+* Plans
+** Egos

@@ -305,7 +305,6 @@ function _M:archeryAcquireTargetsWith(weapon, ammo, x, y, tg, params)
   if #targets > 0 then return targets end
 end
 
-
 function _M:archeryShoot(targets, talent, tg, params)
   local base_tg = tg or {}
   base_tg.talent = base_tg.talent or talent

@@ -84,9 +84,11 @@ function _M:postUseTalent(ab, ret, silent)
 			for target, _ in pairs(self.turn_procs.melee_targets or {}) do
 				-- Do the countdown.
 				local vulnerable = target:hasEffect('EFF_GUARD_VULNERABLE')
-				vulnerable.count = vulnerable.count - 1
-				if vulnerable.count <= 0 then
-					target:removeEffect('EFF_GUARD_VULNERABLE')
+				if vulnerable then
+					vulnerable.count = vulnerable.count - 1
+					if vulnerable.count <= 0 then
+						target:removeEffect('EFF_GUARD_VULNERABLE')
+					end
 				end
 			end
 			-- Apply vulnerable bonus.

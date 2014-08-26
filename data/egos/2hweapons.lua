@@ -8,11 +8,9 @@ if config.settings.tome.grayswandir_weaponry_new_egos ~= false then
 		rarity = 3,
 		cost = 10,
 		combat = {
-			dam = resolvers.mbonus_material(5, 1),
-			melee_project = {
-				[DamageType.GRAYSWANDIR_KNOCKBACK] = resolvers.mbonus_material(40, 20),},},
+			dam = resolvers.mbonus_material(5, 1),},
 		encumber = 1,
-	}
+		granted_abilities = {T_GRAYSWANDIR_HEAVY_STRIKE = true,},}
 
 	newEntity {
 		power_source = {technique = true,},
@@ -20,7 +18,6 @@ if config.settings.tome.grayswandir_weaponry_new_egos ~= false then
 		level_range = {1, 50},
 		rarity = 7,
 		cost = 20,
-		combat = {
-			sweep_attack = 1,},}
+		granted_abilities = {T_GRAYSWANDIR_SWEEPING_BLOWS = true,},}
 
 end

@@ -11,11 +11,11 @@ if config.settings.tome.grayswandir_weaponry_new_egos ~= false then
 		cost = 30,
 		greater_ego = 1,
 		combat = {
-			extra_accuracy_effects = {silence = 0.5,},
 			melee_project = {
 				[DamageType.BLEED] = resolvers.mbonus_material(15, 5),},},
 		wielder = {
 			inc_stealth = resolvers.mbonus_material(15, 5),
-			combat_critical_power = resolvers.mbonus_material(15, 5),},}
+			combat_critical_power = resolvers.mbonus_material(15, 5),},
+		granted_abilities = {T_GRAYSWANDIR_THROAT_SLITTER = true,},}
 
 end

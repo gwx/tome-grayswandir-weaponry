@@ -107,7 +107,7 @@ end
 -- If we can do a sweeping attack with the given weapon's combat table.
 function _M:combatCanSweep(combat, target)
   return target ~= self and
-		g.get(combat, 'sweep_attack') and
+		(table.get(combat, 'sweep_attack') or self.combat_sweep_attack) and
 		not g.get(self, '__talent_running', '__sweep_disabled') and
     not combat.__sweep_disabled
 end
@@ -208,7 +208,7 @@ function _M:attackTarget(target, damtype, mult, noenergy, force_unharmed)
 		-- First check if we only hit vulnerable targets.
 		local all_vulnerable = true
 		for target, _ in pairs(self.turn_procs.melee_targets or {}) do
-			local vulnerable = target.hasEffect and target:hasEffect('EFF_GUARD_VULNERABLE')
+			local vulnerable = target and target.hasEffect and target:hasEffect('EFF_GUARD_VULNERABLE')
 			if not g.get(vulnerable, 'src', self) then
 				all_vulnerable = false
 			end
@@ -218,9 +218,11 @@ function _M:attackTarget(target, damtype, mult, noenergy, force_unharmed)
 			for target, _ in pairs(self.turn_procs.melee_targets or {}) do
 				-- Do the countdown.
 				local vulnerable = target.hasEffect and target:hasEffect('EFF_GUARD_VULNERABLE')
-				vulnerable.count = vulnerable.count - 1
-				if vulnerable.count <= 0 then
-					target:removeEffect('EFF_GUARD_VULNERABLE')
+				if vulnerable then
+					vulnerable.count = vulnerable.count - 1
+					if vulnerable.count <= 0 then
+						target:removeEffect('EFF_GUARD_VULNERABLE')
+					end
 				end
 			end
 		end
@@ -588,6 +590,14 @@ function _M:combatSpeed(weapon)
 	local mult = self.combat_physspeed_multiplier or 1
 	return combatSpeed(self, weapon) / mult
 end
+
+local physicalCrit = _M.physicalCrit
+function _M:physicalCrit(dam, weapon, target, atk, def, add_chance, crit_power_add)
+	local ret = {physicalCrit(self, dam, weapon, target, atk, def, add_chance, crit_power_add)}
+	self.turn_procs.is_any_crit = true
+	return unpack(ret)
+end
+
 
 -- Generic Scaling Function
 --

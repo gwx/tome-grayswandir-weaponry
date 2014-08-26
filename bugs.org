@@ -1,0 +1,2 @@
+- Check exotic weapons w/ nulltweaks.
+- Move riposte replacement check into on pre use
