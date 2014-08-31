@@ -91,3 +91,37 @@ newDamageType {
     end
   end,
 }
+
+newDamageType {
+  type = 'GRAYSWANDIR_BINDING',
+  name = '% bind chance',
+  text_color = '#DARK_GREEN#',
+	tdesc = function(dam, oldDam)
+		parens = ""
+		dam = dam or 0
+		if 'table' == _G.type(dam) then dam = dam.chance or 30 end
+		if oldDam then
+			if 'table' == _G.type(oldDam) then oldDam = oldDam.chance or 30 end
+			diff = dam - oldDam
+			if diff > 0 then
+				parens = (" (#LIGHT_GREEN#+%d%%#LAST#)"):format(diff)
+			elseif diff < 0 then
+				parens = (" (#RED#%d%%#LAST#)"):format(diff)
+			end
+		end
+		return ("* #LIGHT_GREEN#%d%%#LAST# chance to #GREEN#bind#LAST#%s")
+			:format(dam, parens)
+	end,
+  projector = function(src, x, y, type, params)
+		local target = game.level.map(x, y, Map.ACTOR)
+    if not target then return end
+
+    if 'table' ~= _G.type(params) then params = {chance = params or 30} end
+    if rng.percent(params.chance) and target:canBe(params.resist_type or 'pin') then
+      target:setEffect('EFF_GRAYSWANDIR_BOUND', params.dur or 3, {
+                         apply_power = params.apply_power or src:combatAttack(params.weapon)})
+    else
+      game.logSeen(target, "%s resists being bound!", target.name:capitalize())
+    end
+  end,
+}

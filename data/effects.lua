@@ -199,3 +199,18 @@ newEffect {
 		self:effectTemporaryValue(eff, 'combat_def', -eff.save)
 		self:effectTemporaryValue(eff, 'combat_physresist', -eff.save)
 	end,}
+
+newEffect {
+	name = 'GRAYSWANDIR_BOUND',
+	desc = 'Bound',
+	long_desc = function(self, eff)
+		return ('Target is bound, preventing them from moving and their talents from cooling down.')
+			:format(eff.save, eff.crit)
+	end,
+	type = 'physical', subtype = {pin = true, stun = true,},
+	status = 'detrimental',
+	parameters = {},
+	activate = function(self, eff)
+		self:effectTemporaryValue(eff, 'never_move', 1)
+		self:effectTemporaryValue(eff, 'no_talents_cooldown', 1)
+	end,}

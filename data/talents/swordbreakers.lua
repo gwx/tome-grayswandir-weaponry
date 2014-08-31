@@ -5,7 +5,7 @@ dwd.getDamageChange = function(self, t, fake)
   if not weapon or weapon.subtype=="mindstar" and not fake then return 0 end
   if weapon then
     local combat = weapon.combat
-    if combat.dual_deflect then
+    if combat and combat.dual_deflect then
       -- Setup the table once to point to the combat table.
       if not combat.dual_deflect.__setup then
         combat.dual_deflect.__setup = true
