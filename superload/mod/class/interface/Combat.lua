@@ -368,6 +368,7 @@ function _M:attackTargetWith(target, weapon, damtype, mult, force_dam)
 		end
   end
 
+	final_speed = final_speed or 0
   return final_speed, final_hit, all_hits
 end
 
