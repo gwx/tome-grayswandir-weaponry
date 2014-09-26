@@ -1,0 +1,8 @@
+* Changes
+** Talented Weapons
+- Counter Bash checks for valid targets in pre use phase.
+- Added ' of binding' club ego.
+- Clubs no longer get mindstar set egos.
+- 'heavy ' ego now grants a knockback talent instead of a knockback chance on hit.
+- ' of throat-sitting' ego now grants a silence talent instead of a silence chance on hit.
+- 'sweeping ' ego now grants a sweeping talent (sustain) instead of an innate weapon attribute.
