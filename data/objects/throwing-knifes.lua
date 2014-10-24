@@ -88,7 +88,7 @@ if config.settings.tome.grayswandir_weaponry_throwing_knives ~= false then
     combat = {
       range = 4,
       capacity = resolvers.rngavg(5, 7),
-      dam = resolvers.rngavg(3, 5),
+      dam = resolvers.rngavg(21, 28),
       apr = 9,
       physcrit = 8,
       dammod = {str = 0.45, dex = 0.45},

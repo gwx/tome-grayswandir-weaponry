@@ -245,10 +245,7 @@ function _M:archeryAcquireTargetsWith(weapon, ammo, x, y, tg, params)
   if not tg.range then tg.range = wcombat.range end
   if not tg.type then tg.type = wcombat.tg_type or acombat.tg_type or 'bolt' end
 
-  local infinite =
-		ammo.infinite or
-		self:attr('infinite_ammo') or
-		params.infinite
+  local infinite = ammo.infinite or self:attr 'infinite_ammo' or params.infinite
 
   local targets = {}
   local grab_target = function(x, y)
@@ -289,7 +286,8 @@ function _M:archeryAcquireTargetsWith(weapon, ammo, x, y, tg, params)
       weapon = weapon, ammo = ammo, x = x, y = y,}
 
     local t = {x = x, y = y, target = target, weapon = weapon, ammo = ammo,
-               offhand = params.offhand, use_psi_archery = params.use_psi_archery}
+			range = weapon.range or self:attr 'archery_range_override' or 6,
+			offhand = params.offhand, use_psi_archery = params.use_psi_archery}
     table.insert(targets, t)
   end
 
@@ -319,19 +317,27 @@ function _M:archeryShoot(targets, talent, tg, params)
     tg.type = tg.type or wcombat.tg_type or acombat.tg_type
     tg.display = tg.display or self:archeryDefaultProjectileVisual(weapon, ammo)
     tg.speed = (tg.speed or 10) + (wcombat.travel_speed or 0) + (acombat.travel_speed or 0)
+		tg.range = tg.range or data.range
     tg.archery = params and table.clone(params) or {}
     tg.archery.weapon = wcombat
     tg.archery.ammo = acombat
     tg.archery.mult = (tg.archery.mult or 1) * (data.mult or 1)
     if data.offhand and not wcombat.no_offhand_penalty then
       tg.archery.mult = self:getOffHandMult(wcombat, tg.archery.mult)
-    end
+			end
     if data.use_psi_archery then tg.archery.use_psi_archery = true end
+		if self:attr 'archery_pass_friendly' then
+			tg.friendlyfire = false
+			tg.friendlyblock = false
+			end
+
     if weapon.on_archery_trigger then
       weapon.on_archery_trigger(weapon, self, tg, params, data, talent)
-    end
+			end
+		print('YYYYY')
+		table.print(tg)
     self:projectile(tg, data.x, data.y, _M.archery_projectile)
-  end
-end
+		end
+	end
 
 return _M

@@ -1,7 +1,7 @@
 long_name = 'Weapons Pack'
 short_name = 'grayswandir-weaponry'
 for_module = 'tome'
-version = {1,2,3}
+version = {1, 2, 4,}
 weight = 80
 author = {'grayswandir'}
 homepage = ''

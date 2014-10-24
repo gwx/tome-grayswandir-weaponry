@@ -27,7 +27,8 @@ newTalent{
 	short_name = 'GRAYSWANDIR_COUNTER_BASH',
 	type = {'technique/other', 2},
 	require = {
-		stat = {str = function(level) return 14 + level * 6 end,},},
+		stat = {str = function(level) return 18 + level * 2 end,},
+		level = function(level) return 3 + level end,},
 	points = 5,
 	random_ego = 'attack',
 	cooldown = 8,
