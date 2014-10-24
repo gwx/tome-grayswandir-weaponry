@@ -42,7 +42,7 @@ newTalent{
 		end
 	end,
 	on_pre_use = function(self, t, silent)
-		if not game.level then return true end
+		if not game.level then return end
 		if not self:hasShield() then
 			if not silent then
 				game.logPlayer(self, "You require a weapon and a shield to use this talent.")
@@ -84,7 +84,7 @@ newTalent{
 	action = function(self, t)
 		local shield = self:hasShield()
 		if not shield then
-			game.logPlayer(self, 'You cannot use Revanche without a shield!')
+			game.logPlayer(self, 'You cannot use Counter Bash without a shield!')
 			return
 		end
 
