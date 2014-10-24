@@ -22,6 +22,15 @@ function Talents.talents_def.T_RIPOSTE:do_generic_option()
 	end
 end
 
+do
+	local block = Talents.talents_def.T_BLOCK
+	local action = block.action
+	function block.action(self, t)
+		if not self:knowTalent 'T_BLOCK' then return end
+		return action(self, t)
+		end
+	end
+
 newTalent{
 	name = 'Counter Bash',
 	short_name = 'GRAYSWANDIR_COUNTER_BASH',
