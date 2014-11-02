@@ -1,7 +1,7 @@
 if config.settings.tome.grayswandir_weaponry_new_egos ~= false then
 
 	newEntity {
-		power_sorcue = {arcane = true},
+		power_source = {arcane = true},
 		name = 'paladin\'s ', prefix = true, instant_resolve = true,
 		keywords = {paladin = true},
 		level_range = {20, 50},

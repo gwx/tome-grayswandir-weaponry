@@ -1,5 +1,5 @@
 local hook = function(self, data)
-	for _, name in pairs {'granted-abilities', 'scale',} do
+	for _, name in pairs {'granted-abilities',} do
 		require('grayswandir.'..name)
 	end
 end
