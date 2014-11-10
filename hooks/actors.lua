@@ -3,7 +3,7 @@ local hook = function(self, data)
     local range = table.get(self.taunt_nearby, 'range') or 1
     local tg = {type = 'ball', range = 0, radius = range, selffire = false}
     local taunt = function(x, y)
-      if not rng.percent(self.taunt_nearby.chance or 10) then return end
+      if not rng.percent(table.get(self.taunt_nearby, 'chance') or 10) then return end
       local actor = game.level.map(x, y, game.level.map.ACTOR)
       if not actor then return end
       local _, _, target = actor:getTarget()
