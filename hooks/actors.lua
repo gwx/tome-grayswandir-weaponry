@@ -1,6 +1,6 @@
 local hook = function(self, data)
   if self.taunt_nearby then
-    local range = self.taunt_nearby.range or 1
+    local range = table.get(self.taunt_nearby, 'range') or 1
     local tg = {type = 'ball', range = 0, radius = range, selffire = false}
     local taunt = function(x, y)
       if not rng.percent(self.taunt_nearby.chance or 10) then return end
